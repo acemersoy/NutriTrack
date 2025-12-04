@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil & Hedefler - NutriTrack</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="smooth-scroll.js" defer></script>
+    <script src="swipe.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding-bottom: 80px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        /* PROFILE SECTION - Material Design & WCAG */
+        .profile-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .profile-section {
+            background: rgba(30, 30, 40, 0.95); /* Material Design: Surface */
+            border: 1px solid rgba(80, 80, 100, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        [data-theme="dark"] .section-title {
+            color: rgba(255, 255, 255, 0.87); /* WCAG: High emphasis */
+        }
+
+        [data-theme="dark"] .section-title i {
+            color: #A0B4FF;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* FORM ELEMENTS - Material Design & WCAG */
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            transition: color 0.3s ease;
+        }
+
+        [data-theme="dark"] .form-label {
+            color: rgba(255, 255, 255, 0.87); /* WCAG: High emphasis */
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border: 2px solid #e6e6e6;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1a1a1a;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        [data-theme="dark"] .form-input {
+            background: rgba(40, 40, 55, 0.9); /* Material Design: Component */
+            border-color: rgba(80, 80, 100, 0.5);
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        [data-theme="dark"] .form-input:focus {
+            background: rgba(50, 50, 65, 0.95);
+            border-color: rgba(102, 126, 234, 0.7);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        [data-theme="dark"] .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.38); /* Material Design: Disabled */
+        }
+
+        .form-select {
+            padding: 12px 15px;
+            border: 2px solid #e6e6e6;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #1a1a1a;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        [data-theme="dark"] .form-select {
+            background: rgba(40, 40, 55, 0.9);
+            border-color: rgba(80, 80, 100, 0.5);
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        [data-theme="dark"] .form-select:focus {
+            background: rgba(50, 50, 65, 0.95);
+            border-color: rgba(102, 126, 234, 0.7);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        [data-theme="dark"] .form-select option {
+            background: rgba(30, 30, 40, 0.98);
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        /* SAVE BUTTON - Material Design & WCAG */
+        .save-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .save-button:active {
+            transform: translateY(0);
+        }
+
+        [data-theme="dark"] .save-button {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        [data-theme="dark"] .save-button:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        /* BMR SECTION - Material Design & WCAG */
+        .bmr-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .bmr-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .bmr-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .bmr-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .bmr-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .bmr-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .bmr-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] .bmr-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        [data-theme="dark"] .bmr-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .bmr-item-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .bmr-item-label {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* GOALS SECTION - Material Design & WCAG */
+        .goals-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .goals-section {
+            background: rgba(30, 30, 40, 0.95); /* Material Design: Surface */
+            border: 1px solid rgba(80, 80, 100, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* GOAL CARD - Material Design & WCAG */
+        .goal-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        [data-theme="dark"] .goal-card {
+            background: rgba(40, 40, 55, 0.9); /* Material Design: Component */
+            border: 1px solid rgba(80, 80, 100, 0.3);
+        }
+
+        [data-theme="dark"] .goal-card .goal-title {
+            color: rgba(255, 255, 255, 0.87); /* WCAG: High emphasis */
+        }
+
+        [data-theme="dark"] .goal-card .goal-description {
+            color: rgba(255, 255, 255, 0.60) !important; /* Material Design: Medium emphasis */
+        }
+
+        .goal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .goal-card:hover {
+            background: rgba(50, 50, 65, 0.9);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .goal-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        [data-theme="dark"] .goal-card.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            border-color: transparent;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .goal-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .goal-card.selected .goal-icon {
+            color: white;
+        }
+
+        [data-theme="dark"] .goal-card .goal-icon {
+            color: #A0B4FF;
+        }
+
+        [data-theme="dark"] .goal-card.selected .goal-icon {
+            color: white;
+        }
+
+        .goal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .goal-description {
+            font-size: 0.9rem;
+            color: #4a4a4a;
+            line-height: 1.4;
+        }
+
+        [data-theme="dark"] .goal-description {
+            color: #d0d0d0;
+            opacity: 1;
+        }
+
+        /* PERIOD SECTION - Material Design & WCAG */
+        .period-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .period-section {
+            background: rgba(30, 30, 40, 0.95); /* Material Design: Surface */
+            border: 1px solid rgba(80, 80, 100, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .period-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .period-info {
+            background: rgba(40, 40, 55, 0.8);
+            border: 1px solid rgba(80, 80, 100, 0.3);
+        }
+
+        .period-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .period-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .period-button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .period-button:active {
+            transform: translateY(0);
+        }
+
+        [data-theme="dark"] .period-button {
+            background: rgba(102, 126, 234, 0.9);
+        }
+
+        [data-theme="dark"] .period-button:hover {
+            background: rgba(102, 126, 234, 1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        }
+
+        .history-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .history-controls {
+            margin-bottom: 25px;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .history-stat-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .history-stat-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .history-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .history-chart-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            height: 300px;
+            position: relative;
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+
+        .history-foods-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .history-food-item:hover {
+            transform: translateX(5px);
+        }
+
+        .history-food-info {
+            flex: 1;
+        }
+
+        .history-food-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #1a1a1a;
+        }
+
+        .history-food-details {
+            color: #4a4a4a;
+            font-size: 0.9rem;
+        }
+
+        .history-food-nutrients {
+            text-align: right;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        /* DARK MODE - Uluslararası Standartlar (Material Design + WCAG) */
+        [data-theme="dark"] .history-section {
+            background: rgba(30, 30, 40, 0.95); /* Material Design: Surface */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(80, 80, 100, 0.3);
+        }
+
+        [data-theme="dark"] .history-chart-container {
+            background: rgba(25, 25, 35, 0.9); /* Material Design: Elevated Surface */
+            border: 1px solid rgba(80, 80, 100, 0.3);
+        }
+
+        [data-theme="dark"] #historyContent {
+            background: transparent;
+        }
+
+        [data-theme="dark"] .history-stat-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        [data-theme="dark"] .history-stat-value {
+            color: #FFFFFF; /* WCAG AAA - 100% opacity */
+        }
+
+        [data-theme="dark"] .history-stat-label {
+            color: rgba(255, 255, 255, 0.87); /* Material Design: High emphasis text */
+        }
+
+        [data-theme="dark"] .history-food-item {
+            background: rgba(40, 40, 55, 0.8); /* Material Design: Component background */
+            border: 1px solid rgba(80, 80, 100, 0.3);
+        }
+
+        [data-theme="dark"] .history-food-item:hover {
+            background: rgba(50, 50, 65, 0.9);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        [data-theme="dark"] .history-food-name {
+            color: rgba(255, 255, 255, 0.87); /* WCAG AAA compliance */
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .history-food-details {
+            color: rgba(255, 255, 255, 0.60); /* Material Design: Medium emphasis text */
+        }
+
+        [data-theme="dark"] .history-food-nutrients {
+            color: #A0B4FF; /* Accessible purple for dark mode */
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .history-foods-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        [data-theme="dark"] .history-foods-list::-webkit-scrollbar-track {
+            background: rgba(30, 30, 40, 0.5);
+            border-radius: 4px;
+        }
+
+        [data-theme="dark"] .history-foods-list::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+
+        [data-theme="dark"] .history-foods-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+
+        /* Dark mode: History Controls */
+        [data-theme="dark"] .history-controls .form-label {
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        [data-theme="dark"] #historyDateSelect {
+            background: rgba(40, 40, 55, 0.9);
+            color: rgba(255, 255, 255, 0.87);
+            border: 1px solid rgba(80, 80, 100, 0.5);
+        }
+
+        [data-theme="dark"] #historyDateSelect:focus {
+            background: rgba(50, 50, 65, 0.95);
+            border-color: rgba(102, 126, 234, 0.7);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        [data-theme="dark"] #historyDateSelect option {
+            background: rgba(30, 30, 40, 0.98);
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        /* Dark mode: History Empty State */
+        [data-theme="dark"] #historyEmpty {
+            color: rgba(255, 255, 255, 0.60) !important;
+        }
+
+        [data-theme="dark"] #historyEmpty i {
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        /* Dark mode: Section Title */
+        [data-theme="dark"] .history-section .section-title {
+            color: rgba(255, 255, 255, 0.87);
+        }
+
+        [data-theme="dark"] .history-section .section-title i {
+            color: #A0B4FF;
+        }
+
+        /* NAVIGATION - Material Design & WCAG */
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 15px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .navigation {
+            background: rgba(40, 40, 55, 0.95); /* Material Design: Elevated Surface */
+            border: 1px solid rgba(80, 80, 100, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .nav-item {
+            color: #667eea;
+            font-size: 1.5rem;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        [data-theme="dark"] .nav-item {
+            color: #A0B4FF;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        [data-theme="dark"] .nav-item:hover,
+        [data-theme="dark"] .nav-item.active {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bmr-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .goals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .history-chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Tema Değiştir">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user"></i> Profil & Hedefler</h1>
+            <p>Kişisel bilgilerinizi ayarlayın ve hedeflerinizi belirleyin</p>
+        </div>
+
+        <div class="profile-section">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                Kişisel Bilgiler
+            </h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Adınız</label>
+                    <input type="text" class="form-input" id="userName" placeholder="Adınız">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yaşınız</label>
+                    <input type="number" class="form-input" id="userAge" placeholder="Yaş" min="10" max="120">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kilonuz (kg)</label>
+                    <input type="number" class="form-input" id="userWeight" placeholder="Kilo" min="30" max="300" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Boyunuz (cm)</label>
+                    <input type="number" class="form-input" id="userHeight" placeholder="Boy" min="100" max="250">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cinsiyetiniz</label>
+                    <select class="form-select" id="userGender" onchange="updatePeriodSectionVisibility()">
+                        <option value="">Seçiniz</option>
+                        <option value="male">Erkek</option>
+                        <option value="female">Kadın</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Aktivite Seviyesi</label>
+                    <select class="form-select" id="activityLevel">
+                        <option value="">Seçiniz</option>
+                        <option value="sedentary">Hareketsiz (Masa başı iş)</option>
+                        <option value="light">Hafif Aktif (Haftada 1-3 gün)</option>
+                        <option value="moderate">Orta Aktif (Haftada 3-5 gün)</option>
+                        <option value="active">Çok Aktif (Haftada 6-7 gün)</option>
+                        <option value="very_active">Aşırı Aktif (Günde 2x egzersiz)</option>
+                    </select>
+                </div>
+            </div>
+            <button class="save-button" onclick="saveProfile()">
+                <i class="fas fa-save"></i> Bilgileri Kaydet
+            </button>
+        </div>
+
+        <div class="bmr-section" id="bmrSection" style="display: none;">
+            <div class="bmr-value" id="bmrValue">0</div>
+            <div class="bmr-label">Bazal Metabolizma Hızınız (BMR)</div>
+            <div class="bmr-info">
+                <div class="bmr-item">
+                    <div class="bmr-item-value" id="targetCalories">0</div>
+                    <div class="bmr-item-label">Günlük Hedef Kalori</div>
+                </div>
+                <div class="bmr-item">
+                    <div class="bmr-item-value" id="targetProtein">0g</div>
+                    <div class="bmr-item-label">Hedef Protein</div>
+                </div>
+                <div class="bmr-item">
+                    <div class="bmr-item-value" id="targetCarbs">0g</div>
+                    <div class="bmr-item-label">Hedef Karbonhidrat</div>
+                </div>
+                <div class="bmr-item">
+                    <div class="bmr-item-value" id="targetFat">0g</div>
+                    <div class="bmr-item-label">Hedef Yağ</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="goals-section">
+            <h2 class="section-title">
+                <i class="fas fa-bullseye"></i>
+                Hedefinizi Seçin
+            </h2>
+            <div class="goals-grid">
+                <div class="goal-card" data-goal="lose" onclick="selectGoal('lose')">
+                    <div class="goal-icon"><i class="fas fa-weight"></i></div>
+                    <div class="goal-title">Kilo Vermek</div>
+                    <div class="goal-description">Sağlıklı bir şekilde kilo vermek için günlük kalori alımınızı azaltın</div>
+                </div>
+                <div class="goal-card" data-goal="maintain" onclick="selectGoal('maintain')">
+                    <div class="goal-icon"><i class="fas fa-balance-scale"></i></div>
+                    <div class="goal-title">Kilo Korumak</div>
+                    <div class="goal-description">Mevcut kilonuzu korumak için günlük kalori ihtiyacınızı karşılayın</div>
+                </div>
+                <div class="goal-card" data-goal="gain" onclick="selectGoal('gain')">
+                    <div class="goal-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="goal-title">Kilo Almak</div>
+                    <div class="goal-description">Sağlıklı bir şekilde kilo almak için günlük kalori alımınızı artırın</div>
+                </div>
+                <div class="goal-card" data-goal="muscle" onclick="selectGoal('muscle')">
+                    <div class="goal-icon"><i class="fas fa-dumbbell"></i></div>
+                    <div class="goal-title">Kas Kazanmak</div>
+                    <div class="goal-description">Kas kütlesi artırmak için protein ağırlıklı beslenin ve kalori fazlası alın</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="period-section" id="periodSection">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Adet Takibi
+            </h2>
+            <div class="period-info">
+                <div class="period-status">
+                    <div>
+                        <strong>Son Adet Tarihi:</strong>
+                        <span id="lastPeriodDate">Belirtilmemiş</span>
+                    </div>
+                    <button class="period-button" onclick="setLastPeriod()">
+                        <i class="fas fa-calendar-plus"></i> Bugün Başladı
+                    </button>
+                </div>
+                <div class="period-status">
+                    <div>
+                        <strong>Döngü Uzunluğu:</strong>
+                        <span id="cycleLength">28 gün</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="period-button" onclick="adjustCycle(-1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button class="period-button" onclick="adjustCycle(1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="period-status">
+                    <div>
+                        <strong>Sonraki Adet:</strong>
+                        <span id="nextPeriodDate">--</span>
+                    </div>
+                    <div>
+                        <strong>Kalan Gün:</strong>
+                        <span id="daysUntilPeriod">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Geçmiş Beslenmeler
+            </h2>
+            <div class="history-controls">
+                <div class="form-group">
+                    <label class="form-label">Tarih Seçin</label>
+                    <select class="form-select" id="historyDateSelect" onchange="loadHistoryData()">
+                        <option value="">Tarih seçiniz...</option>
+                    </select>
+                </div>
+            </div>
+            <div id="historyContent" style="display: none;">
+                <div class="history-stats">
+                    <div class="history-stat-item">
+                        <div class="history-stat-value" id="historyCalories">0</div>
+                        <div class="history-stat-label">Toplam Kalori</div>
+                    </div>
+                    <div class="history-stat-item">
+                        <div class="history-stat-value" id="historyProtein">0g</div>
+                        <div class="history-stat-label">Protein</div>
+                    </div>
+                    <div class="history-stat-item">
+                        <div class="history-stat-value" id="historyCarbs">0g</div>
+                        <div class="history-stat-label">Karbonhidrat</div>
+                    </div>
+                    <div class="history-stat-item">
+                        <div class="history-stat-value" id="historyFat">0g</div>
+                        <div class="history-stat-label">Yağ</div>
+                    </div>
+                </div>
+                <div class="history-chart-container">
+                    <canvas id="historyChart"></canvas>
+                </div>
+                <div class="history-foods-list" id="historyFoodsList">
+                    <!-- Besinler buraya gelecek -->
+                </div>
+            </div>
+            <div id="historyEmpty" style="text-align: center; padding: 40px; color: #666; display: none;">
+                <i class="fas fa-utensils" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                <p>Henüz geçmiş beslenme kaydı bulunmamaktadır</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navigation">
+        <a href="index.html" class="nav-item" title="Ana Sayfa"><i class="fas fa-home"></i></a>
+        <a href="nutrition.html" class="nav-item" title="Besin Takibi"><i class="fas fa-utensils"></i></a>
+        <a href="recipes.html" class="nav-item" title="Tariflerim"><i class="fas fa-book"></i></a>
+        <a href="profile.html" class="nav-item active" title="Profil"><i class="fas fa-user"></i></a>
+        <a href="progress.html" class="nav-item" title="İlerleme"><i class="fas fa-chart-bar"></i></a>
+    </nav>
+
+    <script>
+        let userData = {};
+
+        let historyChart = null;
+
+        // Mevcut verileri geçmişe aktar (migration)
+        function migrateCurrentData() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayData = JSON.parse(localStorage.getItem('nutritrack_today') || '{}');
+            let historyData = JSON.parse(localStorage.getItem('nutritrack_history') || '{}');
+            
+            // Eğer bugünkü veriler varsa ve geçmişte yoksa, ekle
+            if (todayData.foods && todayData.foods.length > 0 && !historyData[today]) {
+                historyData[today] = {
+                    foods: todayData.foods,
+                    calories: todayData.calories || 0,
+                    water: todayData.water || 0
+                };
+                localStorage.setItem('nutritrack_history', JSON.stringify(historyData));
+            }
+        }
+
+        // Tema yönetimi
+        function initTheme() {
+            const savedTheme = localStorage.getItem('nutritrack_theme') || 'light';
+            setTheme(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('nutritrack_theme', theme);
+            
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            
+            // Chart renklerini güncelle (yeniden oluşturmadan)
+            updateHistoryChartColors(theme === 'dark');
+        }
+
+        // History chart renklerini güncelle (chart'ı yeniden oluşturmadan)
+        function updateHistoryChartColors(isDarkMode) {
+            if (!historyChart) return;
+            
+            // Renk paleti
+            const colors = isDarkMode ? {
+                protein: { bg: 'rgba(138, 158, 255, 0.85)', border: 'rgba(138, 158, 255, 1)' },
+                carbs: { bg: 'rgba(156, 136, 255, 0.85)', border: 'rgba(156, 136, 255, 1)' },
+                fat: { bg: 'rgba(255, 138, 199, 0.85)', border: 'rgba(255, 138, 199, 1)' },
+                text: '#FFFFFF'
+            } : {
+                protein: { bg: 'rgba(102, 126, 234, 0.8)', border: 'rgba(102, 126, 234, 1)' },
+                carbs: { bg: 'rgba(118, 75, 162, 0.8)', border: 'rgba(118, 75, 162, 1)' },
+                fat: { bg: 'rgba(240, 147, 251, 0.8)', border: 'rgba(240, 147, 251, 1)' },
+                text: '#1a1a1a'
+            };
+            
+            // Chart renklerini güncelle
+            historyChart.data.datasets[0].backgroundColor = [
+                colors.protein.bg,
+                colors.carbs.bg,
+                colors.fat.bg
+            ];
+            historyChart.data.datasets[0].borderColor = [
+                colors.protein.border,
+                colors.carbs.border,
+                colors.fat.border
+            ];
+            
+            historyChart.options.plugins.legend.labels.color = colors.text;
+            historyChart.options.plugins.tooltip.titleColor = isDarkMode ? '#FFFFFF' : '#1a1a1a';
+            historyChart.options.plugins.tooltip.bodyColor = isDarkMode ? '#FFFFFF' : '#1a1a1a';
+            historyChart.options.plugins.tooltip.backgroundColor = isDarkMode ? 'rgba(30, 30, 40, 0.98)' : 'rgba(255, 255, 255, 0.98)';
+            historyChart.options.plugins.tooltip.borderColor = isDarkMode ? 'rgba(80, 80, 100, 0.5)' : 'rgba(0, 0, 0, 0.2)';
+            
+            historyChart.update('none'); // Animasyonsuz güncelle
+        }
+
+        // Sayfa yüklendiğinde verileri yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            migrateCurrentData();
+            loadUserData();
+            loadHistoryDates();
+        });
+
+        // Kullanıcı verilerini yükle
+        function loadUserData() {
+            userData = JSON.parse(localStorage.getItem('nutritrack_user') || '{}');
+            
+            // Form alanlarını doldur
+            document.getElementById('userName').value = userData.name || '';
+            document.getElementById('userAge').value = userData.age || '';
+            document.getElementById('userWeight').value = userData.weight || '';
+            document.getElementById('userHeight').value = userData.height || '';
+            document.getElementById('userGender').value = userData.gender || '';
+            document.getElementById('activityLevel').value = userData.activityLevel || '';
+
+            // Hedef seçimi
+            if (userData.goal) {
+                selectGoal(userData.goal);
+            }
+
+            // BMR hesapla ve göster
+            if (userData.weight && userData.height && userData.age && userData.gender) {
+                calculateAndShowBMR();
+            }
+
+            // Adet takibi görünürlüğünü güncelle
+            updatePeriodSectionVisibility();
+            
+            // Adet takibi
+            updatePeriodInfo();
+        }
+
+        // Profili kaydet
+        function saveProfile() {
+            userData.name = document.getElementById('userName').value;
+            userData.age = parseInt(document.getElementById('userAge').value);
+            userData.weight = parseFloat(document.getElementById('userWeight').value);
+            userData.height = parseInt(document.getElementById('userHeight').value);
+            userData.gender = document.getElementById('userGender').value;
+            userData.activityLevel = document.getElementById('activityLevel').value;
+            
+            if (!userData.startDate) {
+                userData.startDate = new Date().toISOString();
+            }
+
+            localStorage.setItem('nutritrack_user', JSON.stringify(userData));
+            
+            // BMR hesapla
+            if (userData.weight && userData.height && userData.age && userData.gender) {
+                calculateAndShowBMR();
+            }
+            
+            // Adet takibi görünürlüğünü güncelle
+            updatePeriodSectionVisibility();
+            
+            showNotification('Profil bilgileri kaydedildi! ✓');
+        }
+
+        // Hedef seçimi
+        function selectGoal(goal) {
+            userData.goal = goal;
+            
+            // Tüm kartlardan seçimi kaldır
+            document.querySelectorAll('.goal-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Seçili kartı işaretle
+            document.querySelector(`[data-goal="${goal}"]`).classList.add('selected');
+            
+            // BMR'yi güncelle
+            if (userData.weight && userData.height && userData.age && userData.gender) {
+                calculateAndShowBMR();
+            }
+            
+            localStorage.setItem('nutritrack_user', JSON.stringify(userData));
+        }
+
+        // BMR hesapla ve göster
+        function calculateAndShowBMR() {
+            let bmr;
+            if (userData.gender === 'male') {
+                bmr = 88.362 + (13.397 * userData.weight) + (4.799 * userData.height) - (5.677 * userData.age);
+            } else {
+                bmr = 447.593 + (9.247 * userData.weight) + (3.098 * userData.height) - (4.677 * userData.age);
+            }
+
+            // Aktivite seviyesine göre ayarlama
+            const activityMultipliers = {
+                'sedentary': 1.2,
+                'light': 1.375,
+                'moderate': 1.55,
+                'active': 1.725,
+                'very_active': 1.9
+            };
+
+            const activityMultiplier = activityMultipliers[userData.activityLevel] || 1.2;
+            const tdee = bmr * activityMultiplier; // Total Daily Energy Expenditure
+
+            // Hedefe göre kalori ayarlama
+            let targetCalories = tdee;
+            if (userData.goal === 'lose') {
+                targetCalories = tdee - 500; // Haftada 0.5kg kaybı
+            } else if (userData.goal === 'gain') {
+                targetCalories = tdee + 500; // Haftada 0.5kg artışı
+            } else if (userData.goal === 'muscle') {
+                targetCalories = tdee + 300; // Kas kazanmak için
+            }
+
+            // Makro besin hedefleri
+            let proteinRatio, carbRatio, fatRatio;
+            
+            if (userData.goal === 'muscle') {
+                proteinRatio = 0.30; // %30 protein
+                fatRatio = 0.25; // %25 yağ
+                carbRatio = 0.45; // %45 karbonhidrat
+            } else if (userData.goal === 'lose') {
+                proteinRatio = 0.35; // %35 protein
+                fatRatio = 0.25; // %25 yağ
+                carbRatio = 0.40; // %40 karbonhidrat
+            } else {
+                proteinRatio = 0.25; // %25 protein
+                fatRatio = 0.30; // %30 yağ
+                carbRatio = 0.45; // %45 karbonhidrat
+            }
+
+            const targetProtein = Math.round((targetCalories * proteinRatio) / 4);
+            const targetCarbs = Math.round((targetCalories * carbRatio) / 4);
+            const targetFat = Math.round((targetCalories * fatRatio) / 9);
+
+            // Görünümü güncelle
+            document.getElementById('bmrSection').style.display = 'block';
+            document.getElementById('bmrValue').textContent = Math.round(bmr);
+            document.getElementById('targetCalories').textContent = Math.round(targetCalories);
+            document.getElementById('targetProtein').textContent = targetProtein + 'g';
+            document.getElementById('targetCarbs').textContent = targetCarbs + 'g';
+            document.getElementById('targetFat').textContent = targetFat + 'g';
+
+            // Hedef kaloriyi kaydet
+            userData.targetCalories = Math.round(targetCalories);
+            userData.bmr = Math.round(bmr);
+            localStorage.setItem('nutritrack_user', JSON.stringify(userData));
+        }
+
+        // Son adet tarihini ayarla
+        function setLastPeriod() {
+            const today = new Date();
+            userData.lastPeriod = today.toISOString();
+            
+            if (!userData.cycleLength) {
+                userData.cycleLength = 28;
+            }
+            
+            localStorage.setItem('nutritrack_user', JSON.stringify(userData));
+            updatePeriodInfo();
+            showNotification('Adet takibi güncellendi! 🌸');
+        }
+
+        // Döngü uzunluğunu ayarla
+        function adjustCycle(change) {
+            if (!userData.cycleLength) userData.cycleLength = 28;
+            userData.cycleLength = Math.max(21, Math.min(35, userData.cycleLength + change));
+            
+            localStorage.setItem('nutritrack_user', JSON.stringify(userData));
+            updatePeriodInfo();
+        }
+
+        // Adet takibi bölümünün görünürlüğünü güncelle
+        function updatePeriodSectionVisibility() {
+            const periodSection = document.getElementById('periodSection');
+            const gender = userData.gender || document.getElementById('userGender').value;
+            
+            if (gender === 'female') {
+                periodSection.style.display = 'block';
+            } else {
+                periodSection.style.display = 'none';
+            }
+        }
+
+        // Adet bilgilerini güncelle
+        function updatePeriodInfo() {
+            if (userData.lastPeriod) {
+                const lastPeriodDate = new Date(userData.lastPeriod);
+                const cycleLength = userData.cycleLength || 28;
+                
+                document.getElementById('lastPeriodDate').textContent = lastPeriodDate.toLocaleDateString('tr-TR');
+                document.getElementById('cycleLength').textContent = cycleLength + ' gün';
+                
+                const nextPeriod = new Date(lastPeriodDate);
+                nextPeriod.setDate(nextPeriod.getDate() + cycleLength);
+                
+                const today = new Date();
+                const daysUntil = Math.ceil((nextPeriod - today) / (1000 * 60 * 60 * 24));
+                
+                document.getElementById('nextPeriodDate').textContent = nextPeriod.toLocaleDateString('tr-TR');
+                document.getElementById('daysUntilPeriod').textContent = daysUntil + ' gün';
+                
+                if (daysUntil <= 0) {
+                    document.getElementById('daysUntilPeriod').textContent = 'Gecikmiş';
+                    document.getElementById('daysUntilPeriod').style.color = '#ff4757';
+                } else {
+                    document.getElementById('daysUntilPeriod').style.color = '';
+                }
+            }
+        }
+
+        // Bildirim gösterme
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #667eea;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // Geçmiş tarihleri yükle
+        function loadHistoryDates() {
+            const historyData = JSON.parse(localStorage.getItem('nutritrack_history') || '{}');
+            const dateSelect = document.getElementById('historyDateSelect');
+            
+            // Mevcut seçenekleri temizle (ilk seçenek hariç)
+            dateSelect.innerHTML = '<option value="">Tarih seçiniz...</option>';
+            
+            // Tarihleri al ve sırala (en yeni önce)
+            const dates = Object.keys(historyData).sort((a, b) => new Date(b) - new Date(a));
+            
+            if (dates.length === 0) {
+                document.getElementById('historyEmpty').style.display = 'block';
+                document.getElementById('historyContent').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('historyEmpty').style.display = 'none';
+            
+            // Tarihleri ekle
+            dates.forEach(date => {
+                const dateObj = new Date(date);
+                const formattedDate = dateObj.toLocaleDateString('tr-TR', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                    weekday: 'long'
+                });
+                
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = formattedDate;
+                dateSelect.appendChild(option);
+            });
+        }
+
+        // Seçili tarihin verilerini yükle
+        function loadHistoryData() {
+            const selectedDate = document.getElementById('historyDateSelect').value;
+            
+            if (!selectedDate) {
+                document.getElementById('historyContent').style.display = 'none';
+                return;
+            }
+            
+            const historyData = JSON.parse(localStorage.getItem('nutritrack_history') || '{}');
+            const dayData = historyData[selectedDate];
+            
+            if (!dayData || !dayData.foods || dayData.foods.length === 0) {
+                document.getElementById('historyContent').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('historyContent').style.display = 'block';
+            
+            // İstatistikleri hesapla
+            let totalCalories = dayData.calories || 0;
+            let totalProtein = 0;
+            let totalCarbs = 0;
+            let totalFat = 0;
+            
+            dayData.foods.forEach(food => {
+                if (food.nutrients) {
+                    totalProtein += food.nutrients.protein || 0;
+                    totalCarbs += food.nutrients.carbs || 0;
+                    totalFat += food.nutrients.fat || 0;
+                }
+            });
+            
+            // İstatistikleri göster
+            document.getElementById('historyCalories').textContent = Math.round(totalCalories);
+            document.getElementById('historyProtein').textContent = Math.round(totalProtein) + 'g';
+            document.getElementById('historyCarbs').textContent = Math.round(totalCarbs) + 'g';
+            document.getElementById('historyFat').textContent = Math.round(totalFat) + 'g';
+            
+            // Besin listesini göster
+            const foodsList = document.getElementById('historyFoodsList');
+            foodsList.innerHTML = dayData.foods.map(food => `
+                <div class="history-food-item">
+                    <div class="history-food-info">
+                        <div class="history-food-name">${food.name}</div>
+                        <div class="history-food-details">${food.amount}g • ${food.brand}</div>
+                    </div>
+                    <div class="history-food-nutrients">
+                        ${food.calories} kcal
+                    </div>
+                </div>
+            `).join('');
+            
+            // Grafik oluştur
+            createHistoryChart(dayData.foods);
+        }
+
+        // Grafik oluştur (Dark Mode Destekli - Uluslararası Standartlar)
+        function createHistoryChart(foods) {
+            const ctx = document.getElementById('historyChart').getContext('2d');
+            
+            // Eski grafiği yok et
+            if (historyChart) {
+                historyChart.destroy();
+            }
+            
+            // Makro besin dağılımını hesapla
+            let protein = 0;
+            let carbs = 0;
+            let fat = 0;
+            
+            foods.forEach(food => {
+                if (food.nutrients) {
+                    protein += food.nutrients.protein || 0;
+                    carbs += food.nutrients.carbs || 0;
+                    fat += food.nutrients.fat || 0;
+                }
+            });
+            
+            // Kalori dağılımını hesapla (her makro besinden gelen kalori)
+            const proteinCalories = protein * 4;
+            const carbsCalories = carbs * 4;
+            const fatCalories = fat * 9;
+            const totalMacroCalories = proteinCalories + carbsCalories + fatCalories;
+            
+            // Dark mode kontrolü
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            // Dark mode'a göre renkler (Material Design + WCAG uyumlu)
+            const colors = isDarkMode ? {
+                protein: {
+                    bg: 'rgba(138, 158, 255, 0.85)',      // A0B4FF - Erişilebilir mavi
+                    border: 'rgba(138, 158, 255, 1)'
+                },
+                carbs: {
+                    bg: 'rgba(156, 136, 255, 0.85)',      // 9C88FF - Erişilebilir mor
+                    border: 'rgba(156, 136, 255, 1)'
+                },
+                fat: {
+                    bg: 'rgba(255, 138, 199, 0.85)',      // FF8AC7 - Erişilebilir pembe
+                    border: 'rgba(255, 138, 199, 1)'
+                },
+                text: '#FFFFFF',                          // Karanlık modda beyaz
+                textSecondary: 'rgba(255, 255, 255, 0.87)',
+                grid: 'rgba(255, 255, 255, 0.12)'         // Material Design: Divider
+            } : {
+                protein: {
+                    bg: 'rgba(102, 126, 234, 0.8)',
+                    border: 'rgba(102, 126, 234, 1)'
+                },
+                carbs: {
+                    bg: 'rgba(118, 75, 162, 0.8)',
+                    border: 'rgba(118, 75, 162, 1)'
+                },
+                fat: {
+                    bg: 'rgba(240, 147, 251, 0.8)',
+                    border: 'rgba(240, 147, 251, 1)'
+                },
+                text: '#1a1a1a',                          // Açık modda koyu siyah
+                textSecondary: '#333333',
+                grid: 'rgba(0, 0, 0, 0.12)'               // Material Design: Divider
+            };
+            
+            historyChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Protein', 'Karbonhidrat', 'Yağ'],
+                    datasets: [{
+                        data: [
+                            Math.round(proteinCalories),
+                            Math.round(carbsCalories),
+                            Math.round(fatCalories)
+                        ],
+                        backgroundColor: [
+                            colors.protein.bg,
+                            colors.carbs.bg,
+                            colors.fat.bg
+                        ],
+                        borderColor: [
+                            colors.protein.border,
+                            colors.carbs.border,
+                            colors.fat.border
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 8  // Hover efekti
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12,
+                                    family: "'Inter', sans-serif",
+                                    weight: '500'
+                                },
+                                color: colors.text,  // Dark mode uyumlu yazı rengi
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: isDarkMode 
+                                ? 'rgba(30, 30, 40, 0.98)' 
+                                : 'rgba(255, 255, 255, 0.98)',
+                            titleColor: isDarkMode ? '#FFFFFF' : '#1a1a1a',  // Açık: Siyah / Koyu: Beyaz
+                            bodyColor: isDarkMode ? '#FFFFFF' : '#1a1a1a',   // Açık: Siyah / Koyu: Beyaz
+                            borderColor: isDarkMode 
+                                ? 'rgba(80, 80, 100, 0.5)' 
+                                : 'rgba(0, 0, 0, 0.2)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const percentage = totalMacroCalories > 0 
+                                        ? Math.round((value / totalMacroCalories) * 100) 
+                                        : 0;
+                                    return `${label}: ${value} kcal (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 800,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Animasyon stilleri
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

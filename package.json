@@ -1,0 +1,53 @@
+{
+  "name": "nutritrack",
+  "version": "1.0.0",
+  "description": "Modern, bilimsel verilere dayalı kişisel beslenme ve sağlık takip uygulaması",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve . --listen 8000",
+    "deploy:netlify": "netlify deploy --prod",
+    "deploy:firebase": "firebase deploy",
+    "test": "echo \"No tests yet\" && exit 0",
+    "lint": "echo \"No linter configured\" && exit 0"
+  },
+  "keywords": [
+    "nutrition",
+    "health",
+    "fitness",
+    "calorie-tracker",
+    "food-diary",
+    "wellness",
+    "diet",
+    "micronutrients",
+    "vitamins",
+    "minerals"
+  ],
+  "author": {
+    "name": "Avni Cem Ersoy",
+    "email": "avnicem.ersoy@example.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KULLANICI_ADI/nutritrack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KULLANICI_ADI/nutritrack/issues"
+  },
+  "homepage": "https://github.com/KULLANICI_ADI/nutritrack#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead"
+  ]
+}
+

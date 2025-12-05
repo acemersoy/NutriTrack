@@ -266,8 +266,30 @@ class NutriTrack {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     }
 
-    // USDA API ile yiyecek arama
+    // USDA API ile yiyecek arama (Cache destekli)
     async searchFoods(query) {
+        if (!query || query.trim().length === 0) {
+            return [];
+        }
+
+        // 1. Önce cache'de ara
+        let cachedResults = [];
+        try {
+            if (typeof foodCache !== 'undefined') {
+                cachedResults = await foodCache.searchFoods(query);
+                console.log(`📦 Cache'den ${cachedResults.length} sonuç bulundu`);
+            }
+        } catch (error) {
+            console.warn('Cache arama hatası:', error);
+        }
+
+        // 2. Cache'de yeterli sonuç varsa (5+), onları döndür (hızlı!)
+        if (cachedResults.length >= 5) {
+            console.log('⚡ Cache\'den hızlı sonuç döndürülüyor');
+            return cachedResults;
+        }
+
+        // 3. API'ye istek at (cache'de yoksa veya az sonuç varsa)
         if (this.USDA_API_KEY === 'DEMO_KEY') {
             return this.getDemoFoods(query);
         }
@@ -277,9 +299,36 @@ class NutriTrack {
                 `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&api_key=${this.USDA_API_KEY}&pageSize=20`
             );
             const data = await response.json();
-            return data.foods || [];
+            const apiResults = data.foods || [];
+
+            // 4. API'den gelen sonuçları cache'e kaydet (arka planda)
+            if (apiResults.length > 0 && typeof foodCache !== 'undefined') {
+                foodCache.saveFoods(apiResults).catch(error => {
+                    console.warn('Cache kayıt hatası:', error);
+                });
+                console.log(`💾 ${apiResults.length} besin cache'e kaydedildi`);
+            }
+
+            // 5. Cache ve API sonuçlarını birleştir (duplicate kontrolü)
+            const combinedResults = [...cachedResults];
+            const cachedIds = new Set(cachedResults.map(f => f.fdcId));
+
+            apiResults.forEach(food => {
+                if (!cachedIds.has(food.fdcId)) {
+                    combinedResults.push(food);
+                }
+            });
+
+            return combinedResults.slice(0, 20); // Maksimum 20 sonuç
         } catch (error) {
             console.error('USDA API hatası:', error);
+            
+            // API hatası durumunda cache'den döndür
+            if (cachedResults.length > 0) {
+                console.log('⚠️ API hatası, cache\'den sonuç döndürülüyor');
+                return cachedResults;
+            }
+            
             return this.getDemoFoods(query);
         }
     }

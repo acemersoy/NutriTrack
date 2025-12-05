@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="db.js" defer></script>
+    <script src="main.js" defer></script>
     <script src="smooth-scroll.js" defer></script>
     <script src="swipe.js" defer></script>
     <style>
@@ -1702,10 +1704,58 @@
         document.head.appendChild(style);
     </script>
 
-    <script src="db.js" defer></script>
-    <script src="main.js" defer></script>
-
     <script>
+        // Cache yönetim fonksiyonları
+        window.getCacheStats = async function() {
+            if (typeof foodCache === 'undefined') {
+                return { error: 'Cache sistemi yüklenmedi' };
+            }
+            try {
+                const stats = await foodCache.getStats();
+                const size = await foodCache.getCacheSize();
+                return { ...stats, size };
+            } catch (error) {
+                console.error('Cache istatistik hatası:', error);
+                return { error: error.message };
+            }
+        };
+
+        window.clearCache = async function() {
+            if (typeof foodCache === 'undefined') {
+                showNotification('Cache sistemi yüklenmedi', 'error');
+                return;
+            }
+            try {
+                await foodCache.clearAll();
+                showNotification('✅ Cache temizlendi!', 'success');
+                // İstatistikleri güncelle
+                if (typeof updateCacheStats === 'function') {
+                    updateCacheStats();
+                }
+            } catch (error) {
+                console.error('Cache temizleme hatası:', error);
+                showNotification('Cache temizlenirken hata oluştu', 'error');
+            }
+        };
+
+        window.cleanExpiredCache = async function() {
+            if (typeof foodCache === 'undefined') {
+                showNotification('Cache sistemi yüklenmedi', 'error');
+                return;
+            }
+            try {
+                const deleted = await foodCache.cleanExpired();
+                showNotification(`🧹 ${deleted} süresi dolmuş besin temizlendi`, 'success');
+                // İstatistikleri güncelle
+                if (typeof updateCacheStats === 'function') {
+                    updateCacheStats();
+                }
+            } catch (error) {
+                console.error('Cache temizleme hatası:', error);
+                showNotification('Cache temizlenirken hata oluştu', 'error');
+            }
+        };
+
         // Cache istatistiklerini güncelle
         async function updateCacheStats() {
             try {

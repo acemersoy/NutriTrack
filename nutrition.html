@@ -1707,6 +1707,13 @@
                 };
             });
 
+            // Besin seçildiğinde cache'e kaydet (arka planda)
+            if (typeof foodCache !== 'undefined' && food.fdcId) {
+                foodCache.saveFood(food).catch(error => {
+                    console.warn('Cache kayıt hatası:', error);
+                });
+            }
+
             document.getElementById('foodTitle').textContent = food.description || food.lowercaseDescription;
             document.getElementById('foodBrand').textContent = food.brandOwner || 'Genel';
             document.getElementById('nutritionDetails').style.display = 'block';
@@ -1810,6 +1817,13 @@
                     foodItem.nutrients.fat = Math.round(value * 100) / 100;
                 }
             });
+
+            // Besin eklendiğinde cache'e kaydet (arka planda)
+            if (typeof foodCache !== 'undefined' && currentFood.fdcId) {
+                foodCache.saveFood(currentFood).catch(error => {
+                    console.warn('Cache kayıt hatası:', error);
+                });
+            }
 
             // Aynı besin aynı öğünde var mı kontrol et
             const existingFoodIndex = todayData.foods.findIndex(f => 

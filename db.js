@@ -45,39 +45,66 @@ class FoodCache {
         });
     }
 
-    // Besin cache'e kaydet
+    // Besin cache'e kaydet (duplicate kontrolü ile)
     async saveFood(food) {
         if (!this.db) await this.init();
+        if (!food || !food.fdcId) return;
 
         return new Promise((resolve, reject) => {
             const transaction = this.db.transaction([this.storeName], 'readwrite');
             const store = transaction.objectStore(this.storeName);
+            
+            // Önce mevcut kaydı kontrol et
+            const checkRequest = store.get(food.fdcId);
 
-            // Cache'e kaydedilecek veri
-            const cachedFood = {
-                fdcId: food.fdcId,
-                description: food.description,
-                brandOwner: food.brandOwner || null,
-                dataType: food.dataType || 'Foundation',
-                foodNutrients: food.foodNutrients || [],
-                foodComponents: food.foodComponents || [],
-                foodAttributes: food.foodAttributes || [],
-                foodCategory: food.foodCategory || null,
-                cachedAt: Date.now(),
-                searchCount: 1,
-                lastAccessed: Date.now()
+            checkRequest.onsuccess = () => {
+                const existingFood = checkRequest.result;
+
+                if (existingFood) {
+                    // Zaten var, sadece erişim sayısını ve zamanını güncelle
+                    existingFood.searchCount = (existingFood.searchCount || 0) + 1;
+                    existingFood.lastAccessed = Date.now();
+                    
+                    const updateRequest = store.put(existingFood);
+                    updateRequest.onsuccess = () => {
+                        console.log(`🔄 Besin cache'de güncellendi: ${food.description}`);
+                        resolve(existingFood);
+                    };
+                    updateRequest.onerror = () => {
+                        reject(updateRequest.error);
+                    };
+                } else {
+                    // Yeni kayıt oluştur
+                    const cachedFood = {
+                        fdcId: food.fdcId,
+                        description: food.description,
+                        brandOwner: food.brandOwner || null,
+                        dataType: food.dataType || 'Foundation',
+                        foodNutrients: food.foodNutrients || [],
+                        foodComponents: food.foodComponents || [],
+                        foodAttributes: food.foodAttributes || [],
+                        foodCategory: food.foodCategory || null,
+                        cachedAt: Date.now(),
+                        searchCount: 1,
+                        lastAccessed: Date.now()
+                    };
+
+                    const putRequest = store.put(cachedFood);
+
+                    putRequest.onsuccess = () => {
+                        console.log(`💾 Besin cache'e kaydedildi: ${food.description}`);
+                        resolve(cachedFood);
+                    };
+
+                    putRequest.onerror = () => {
+                        console.error('Cache kayıt hatası:', putRequest.error);
+                        reject(putRequest.error);
+                    };
+                }
             };
 
-            const request = store.put(cachedFood);
-
-            request.onsuccess = () => {
-                console.log(`💾 Besin cache'e kaydedildi: ${food.description}`);
-                resolve(cachedFood);
-            };
-
-            request.onerror = () => {
-                console.error('Cache kayıt hatası:', request.error);
-                reject(request.error);
+            checkRequest.onerror = () => {
+                reject(checkRequest.error);
             };
         });
     }
@@ -388,23 +415,48 @@ class FoodCache {
         });
     }
 
-    // Cache boyutu (MB)
+    // Cache boyutu (MB) - Sadece foods store'unu hesapla
     async getCacheSize() {
         if (!this.db) await this.init();
 
         return new Promise((resolve, reject) => {
-            if ('storage' in navigator && 'estimate' in navigator.storage) {
-                navigator.storage.estimate().then(estimate => {
-                    const used = estimate.usage || 0;
-                    const quota = estimate.quota || 0;
-                    resolve({
-                        used: (used / 1024 / 1024).toFixed(2), // MB
-                        quota: (quota / 1024 / 1024).toFixed(2), // MB
-                        percentage: ((used / quota) * 100).toFixed(2)
+            try {
+                const transaction = this.db.transaction([this.storeName], 'readonly');
+                const store = transaction.objectStore(this.storeName);
+                const request = store.getAll();
+
+                request.onsuccess = () => {
+                    const foods = request.result;
+                    
+                    // Her besin için JSON stringify ile boyut hesapla
+                    let totalSize = 0;
+                    foods.forEach(food => {
+                        try {
+                            const jsonString = JSON.stringify(food);
+                            totalSize += new Blob([jsonString]).size; // Byte cinsinden
+                        } catch (e) {
+                            // JSON stringify hatası durumunda yaklaşık boyut hesapla
+                            totalSize += 1000; // Varsayılan 1KB
+                        }
                     });
-                });
-            } else {
-                resolve({ used: 'N/A', quota: 'N/A', percentage: 'N/A' });
+
+                    const sizeInMB = (totalSize / 1024 / 1024).toFixed(2);
+                    const sizeInKB = (totalSize / 1024).toFixed(2);
+
+                    resolve({
+                        used: sizeInMB, // MB
+                        usedKB: sizeInKB, // KB (daha hassas)
+                        count: foods.length,
+                        quota: 'N/A', // Sadece cache boyutu, quota bilgisi yok
+                        percentage: 'N/A'
+                    });
+                };
+
+                request.onerror = () => {
+                    reject(request.error);
+                };
+            } catch (error) {
+                reject(error);
             }
         });
     }

@@ -1543,6 +1543,7 @@
         const API_KEY = 'KbMh9bZk9sqAOgaAqsBdw77wn2hb31o7qRvJbzkH'; // Gerçek kullanım için kendi API key'inizi alın
         
         let currentFood = null;
+        let lastSearchResults = []; // Son arama sonuçlarını sakla
         let baseNutrients = {};
         let selectedRecommendation = null;
         let selectedRecipeForQuickAdd = null;
@@ -1667,6 +1668,9 @@
         // Arama sonuçlarını göster
         function displaySearchResults(foods) {
             const resultsDiv = document.getElementById('searchResults');
+            
+            // Son arama sonuçlarını sakla (tekrar arama yapmadan eklemek için)
+            lastSearchResults = foods;
             
             if (foods.length === 0) {
                 resultsDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;">Sonuç bulunamadı</div>';
@@ -1817,13 +1821,6 @@
                     foodItem.nutrients.fat = Math.round(value * 100) / 100;
                 }
             });
-
-            // Besin eklendiğinde cache'e kaydet (arka planda)
-            if (typeof foodCache !== 'undefined' && currentFood.fdcId) {
-                foodCache.saveFood(currentFood).catch(error => {
-                    console.warn('Cache kayıt hatası:', error);
-                });
-            }
 
             // Aynı besin aynı öğünde var mı kontrol et
             const existingFoodIndex = todayData.foods.findIndex(f => 

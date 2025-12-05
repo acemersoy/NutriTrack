@@ -1728,10 +1728,12 @@
             try {
                 await foodCache.clearAll();
                 showNotification('✅ Cache temizlendi!', 'success');
-                // İstatistikleri güncelle
-                if (typeof updateCacheStats === 'function') {
-                    updateCacheStats();
-                }
+                // İstatistikleri güncelle (biraz bekle ki IndexedDB güncellensin)
+                setTimeout(() => {
+                    if (typeof updateCacheStats === 'function') {
+                        updateCacheStats();
+                    }
+                }, 300);
             } catch (error) {
                 console.error('Cache temizleme hatası:', error);
                 showNotification('Cache temizlenirken hata oluştu', 'error');
@@ -1746,10 +1748,12 @@
             try {
                 const deleted = await foodCache.cleanExpired();
                 showNotification(`🧹 ${deleted} süresi dolmuş besin temizlendi`, 'success');
-                // İstatistikleri güncelle
-                if (typeof updateCacheStats === 'function') {
-                    updateCacheStats();
-                }
+                // İstatistikleri güncelle (biraz bekle ki IndexedDB güncellensin)
+                setTimeout(() => {
+                    if (typeof updateCacheStats === 'function') {
+                        updateCacheStats();
+                    }
+                }, 300);
             } catch (error) {
                 console.error('Cache temizleme hatası:', error);
                 showNotification('Cache temizlenirken hata oluştu', 'error');
@@ -1772,11 +1776,23 @@
                 document.getElementById('cacheExpired').textContent = stats.expired || 0;
                 document.getElementById('cacheSearches').textContent = stats.totalSearches || 0;
 
-                // Cache boyutu
-                if (stats.size && stats.size.used !== 'N/A') {
-                    document.getElementById('cacheSizeValue').textContent = stats.size.used;
+                // Cache boyutu - Sadece foods store'unun gerçek boyutu
+                if (stats.size) {
+                    if (stats.size.used !== 'N/A' && stats.size.used !== undefined) {
+                        const sizeMB = parseFloat(stats.size.used);
+                        // 0.01 MB'den küçükse KB olarak göster
+                        if (sizeMB < 0.01) {
+                            document.getElementById('cacheSizeValue').textContent = 
+                                (stats.size.usedKB || '0') + ' KB';
+                        } else {
+                            document.getElementById('cacheSizeValue').textContent = 
+                                sizeMB.toFixed(2) + ' MB';
+                        }
+                    } else {
+                        document.getElementById('cacheSizeValue').textContent = '0 MB';
+                    }
                 } else {
-                    document.getElementById('cacheSizeValue').textContent = 'Hesaplanıyor...';
+                    document.getElementById('cacheSizeValue').textContent = '0 MB';
                 }
             } catch (error) {
                 console.error('Cache istatistik hatası:', error);

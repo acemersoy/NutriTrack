@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Programı | NutriTrack</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f1624, #1b2845);
+            color: #e9eefc;
+            font-family: 'Inter', sans-serif;
+            padding: 24px 16px 80px;
+        }
+        .plan-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(17, 24, 39, 0.75);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+            border-radius: 20px;
+            padding: 28px;
+            backdrop-filter: blur(18px);
+        }
+        h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+        .subtitle { margin-bottom: 18px; opacity: 0.9; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: rgba(255,255,255,0.06); }
+        tr:last-child td { border-bottom: none; }
+        .exercise-item {
+            background: rgba(102,126,234,0.15);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .exercise-info {
+            flex: 1;
+        }
+        .exercise-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .exercise-details {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        .exercise-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-icon {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #e9eefc;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-icon:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .btn-add {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            backdrop-filter: blur(20px);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #e9eefc;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #e9eefc;
+            font-size: 1rem;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,0.08);
+        }
+        .form-input::placeholder {
+            color: rgba(233,238,252,0.5);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            flex: 1;
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #e9eefc;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        a.back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            color: #9fb4ff;
+            text-decoration: none;
+        }
+        .empty-day {
+            opacity: 0.5;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="plan-container">
+        <h1><i class="fas fa-dumbbell"></i> Fitness Programı</h1>
+        <p class="subtitle">Güç + kardiyo dengesiyle haftalık düzen</p>
+        <table id="workoutTable">
+            <thead>
+                <tr>
+                    <th>Gün</th>
+                    <th>Hareketler</th>
+                    <th>Set / Tekrar</th>
+                    <th>Not</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody id="workoutTableBody">
+                <!-- Dinamik olarak doldurulacak -->
+            </tbody>
+        </table>
+        <a class="back" href="profile.html"><i class="fas fa-arrow-left"></i> Profile dön</a>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="exerciseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Hareket Ekle</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="exerciseForm" onsubmit="saveExercise(event)">
+                <input type="hidden" id="editDay" value="">
+                <input type="hidden" id="editIndex" value="">
+                <div class="form-group">
+                    <label class="form-label">Hareket Adı</label>
+                    <input type="text" class="form-input" id="exerciseName" placeholder="Örn: Bench Press" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Set Sayısı</label>
+                    <input type="number" class="form-input" id="exerciseSets" placeholder="Örn: 4" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tekrar / Süre</label>
+                    <input type="text" class="form-input" id="exerciseReps" placeholder="Örn: 8-10 veya 30 dk" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Not (Opsiyonel)</label>
+                    <input type="text" class="form-input" id="exerciseNote" placeholder="Örn: Son set drop-set">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SPORT_TYPE = 'fitness';
+        const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+        
+        let workoutData = {};
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWorkoutData();
+            renderTable();
+        });
+
+        // localStorage'dan veri yükle
+        function loadWorkoutData() {
+            const saved = localStorage.getItem(`nutritrack_workout_${SPORT_TYPE}`);
+            if (saved) {
+                workoutData = JSON.parse(saved);
+            } else {
+                // Varsayılan veriler
+                workoutData = {};
+                DAYS.forEach(day => {
+                    workoutData[day] = [];
+                });
+            }
+        }
+
+        // Veriyi kaydet
+        function saveWorkoutData() {
+            localStorage.setItem(`nutritrack_workout_${SPORT_TYPE}`, JSON.stringify(workoutData));
+        }
+
+        // Tabloyu render et
+        function renderTable() {
+            const tbody = document.getElementById('workoutTableBody');
+            tbody.innerHTML = '';
+
+            DAYS.forEach(day => {
+                const exercises = workoutData[day] || [];
+                const row = document.createElement('tr');
+                
+                // Gün
+                const dayCell = document.createElement('td');
+                dayCell.textContent = day;
+                row.appendChild(dayCell);
+
+                // Hareketler
+                const exercisesCell = document.createElement('td');
+                if (exercises.length === 0) {
+                    exercisesCell.innerHTML = '<span class="empty-day">Henüz hareket eklenmedi</span>';
+                } else {
+                    exercises.forEach((exercise, index) => {
+                        const exerciseDiv = document.createElement('div');
+                        exerciseDiv.className = 'exercise-item';
+                        exerciseDiv.innerHTML = `
+                            <div class="exercise-info">
+                                <div class="exercise-name">${exercise.name}</div>
+                                <div class="exercise-details">${exercise.sets} set × ${exercise.reps}</div>
+                            </div>
+                            <div class="exercise-actions">
+                                <button class="btn-icon" onclick="editExercise('${day}', ${index})" title="Düzenle">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" onclick="deleteExercise('${day}', ${index})" title="Sil">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                        exercisesCell.appendChild(exerciseDiv);
+                    });
+                }
+                row.appendChild(exercisesCell);
+
+                // Set/Tekrar özeti
+                const summaryCell = document.createElement('td');
+                if (exercises.length > 0) {
+                    const totalSets = exercises.reduce((sum, ex) => sum + parseInt(ex.sets), 0);
+                    summaryCell.textContent = `${totalSets} set`;
+                } else {
+                    summaryCell.innerHTML = '<span class="empty-day">-</span>';
+                }
+                row.appendChild(summaryCell);
+
+                // Notlar
+                const notesCell = document.createElement('td');
+                const notes = exercises.filter(ex => ex.note).map(ex => ex.note).join(', ');
+                if (notes) {
+                    notesCell.textContent = notes;
+                } else {
+                    notesCell.innerHTML = '<span class="empty-day">-</span>';
+                }
+                row.appendChild(notesCell);
+
+                // İşlem butonu
+                const actionCell = document.createElement('td');
+                const addBtn = document.createElement('button');
+                addBtn.className = 'btn-add';
+                addBtn.innerHTML = '<i class="fas fa-plus"></i> Hareket Ekle';
+                addBtn.onclick = () => openModal(day);
+                actionCell.appendChild(addBtn);
+                row.appendChild(actionCell);
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Modal aç
+        function openModal(day, index = null) {
+            const modal = document.getElementById('exerciseModal');
+            const form = document.getElementById('exerciseForm');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            document.getElementById('editDay').value = day;
+            document.getElementById('editIndex').value = index !== null ? index : '';
+            
+            if (index !== null) {
+                // Düzenleme modu
+                modalTitle.textContent = 'Hareketi Düzenle';
+                const exercise = workoutData[day][index];
+                document.getElementById('exerciseName').value = exercise.name;
+                document.getElementById('exerciseSets').value = exercise.sets;
+                document.getElementById('exerciseReps').value = exercise.reps;
+                document.getElementById('exerciseNote').value = exercise.note || '';
+            } else {
+                // Yeni ekleme modu
+                modalTitle.textContent = `${day} - Hareket Ekle`;
+                form.reset();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        // Modal kapat
+        function closeModal() {
+            document.getElementById('exerciseModal').classList.remove('active');
+            document.getElementById('exerciseForm').reset();
+        }
+
+        // Hareket kaydet
+        function saveExercise(event) {
+            event.preventDefault();
+            
+            const day = document.getElementById('editDay').value;
+            const index = document.getElementById('editIndex').value;
+            const exercise = {
+                name: document.getElementById('exerciseName').value,
+                sets: parseInt(document.getElementById('exerciseSets').value),
+                reps: document.getElementById('exerciseReps').value,
+                note: document.getElementById('exerciseNote').value
+            };
+
+            if (!workoutData[day]) {
+                workoutData[day] = [];
+            }
+
+            if (index !== '') {
+                // Düzenleme
+                workoutData[day][parseInt(index)] = exercise;
+            } else {
+                // Yeni ekleme
+                workoutData[day].push(exercise);
+            }
+
+            saveWorkoutData();
+            renderTable();
+            closeModal();
+        }
+
+        // Hareket düzenle
+        function editExercise(day, index) {
+            openModal(day, index);
+        }
+
+        // Hareket sil
+        function deleteExercise(day, index) {
+            if (confirm('Bu hareketi silmek istediğinize emin misiniz?')) {
+                workoutData[day].splice(index, 1);
+                saveWorkoutData();
+                renderTable();
+            }
+        }
+
+        // Modal dışına tıklanınca kapat
+        document.getElementById('exerciseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -207,6 +207,97 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
+        /* TRAINING SECTION */
+        .training-section {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        [data-theme="dark"] .training-section {
+            background: rgba(25, 25, 35, 0.9);
+            border: 1px solid rgba(80,80,100,0.35);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.45);
+        }
+
+        .training-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .training-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65));
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            min-height: 160px;
+            display: flex;
+            align-items: flex-end;
+            color: #1a1a1a;
+        }
+
+        [data-theme="dark"] .training-card {
+            background: linear-gradient(135deg, rgba(40,40,55,0.85), rgba(30,30,40,0.75));
+            border-color: rgba(80,80,100,0.4);
+            color: rgba(255,255,255,0.9);
+        }
+
+        .training-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+            border-color: rgba(102,126,234,0.6);
+        }
+
+        .training-card img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: saturate(1.05);
+            transition: opacity 0.2s ease;
+        }
+
+        .training-card:hover img {
+            opacity: 0.8;
+        }
+
+        .training-card .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55));
+            pointer-events: none;
+        }
+
+        .training-card .content {
+            position: relative;
+            padding: 14px 16px;
+            z-index: 2;
+        }
+
+        .training-card h4 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .training-card p {
+            margin: 6px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
         /* BMR SECTION - Material Design & WCAG */
         .bmr-section {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -917,6 +1008,55 @@
                     <div class="bmr-item-value" id="targetFat">0g</div>
                     <div class="bmr-item-label">Hedef Yağ</div>
                 </div>
+            </div>
+        </div>
+
+        <div class="training-section">
+            <h2 class="section-title">
+                <i class="fas fa-running"></i>
+                Antrenman Takibi
+            </h2>
+            <div class="training-grid">
+                <a class="training-card" href="fitness.html">
+                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" alt="Fitness">
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <h4>Fitness</h4>
+                        <p>Güç ve dayanıklılık odaklı haftalık plan</p>
+                    </div>
+                </a>
+                <a class="training-card" href="yoga.html">
+                    <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80" alt="Yoga">
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <h4>Yoga</h4>
+                        <p>Esneklik ve zihin sakinliği için akışlar</p>
+                    </div>
+                </a>
+                <a class="training-card" href="pilates.html">
+                    <img src="https://images.unsplash.com/photo-1546484959-f9a9c6c915b8?auto=format&fit=crop&w=800&q=80" alt="Pilates">
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <h4>Pilates</h4>
+                        <p>Core güçlendirme ve duruş geliştirme</p>
+                    </div>
+                </a>
+                <a class="training-card" href="hiit.html">
+                    <img src="https://images.unsplash.com/photo-1518611012118-6f2e27b73d19?auto=format&fit=crop&w=800&q=80" alt="HIIT">
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <h4>HIIT</h4>
+                        <p>Yüksek yoğunluklu kardiyo intervalleri</p>
+                    </div>
+                </a>
+                <a class="training-card" href="cycling.html">
+                    <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=800&q=80" alt="Bisiklet">
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <h4>Bisiklet</h4>
+                        <p>Dayanıklılık ve yağ yakımı için turlar</p>
+                    </div>
+                </a>
             </div>
         </div>
 

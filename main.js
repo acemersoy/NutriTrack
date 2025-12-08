@@ -1,4 +1,3 @@
-// NutriTrack - Ana JavaScript Dosyası
 // Tüm uygulama işlevleri ve veri yönetimi
 
 class NutriTrack {
@@ -638,38 +637,46 @@ window.showNotification = function(message, type = 'success') {
 };
 
 // CSS animasyonları için stiller
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
+(function() {
+    // Eğer zaten eklenmişse tekrar ekleme
+    if (document.getElementById('nutritrack-animations')) {
+        return;
     }
     
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.5s ease;
-    }
-    
-    .pulse {
-        animation: pulse 2s infinite;
-    }
-`;
-document.head.appendChild(style);
+    const style = document.createElement('style');
+    style.id = 'nutritrack-animations';
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    `;
+    document.head.appendChild(style);
+})();
 
 // Uygulama dışa aktarımı
 if (typeof module !== 'undefined' && module.exports) {

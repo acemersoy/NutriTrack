@@ -711,21 +711,27 @@
                     targetCalories = bmr + 300; // Kas kazanmak için 300 kcal fazla
                 }
                 
-                document.getElementById('bmrValue').textContent = Math.round(bmr);
-                document.getElementById('targetCalories').textContent = Math.round(targetCalories);
+                const bmrValueEl = document.getElementById('bmrValue');
+                const targetCaloriesEl = document.getElementById('targetCalories');
+                if (bmrValueEl) bmrValueEl.textContent = Math.round(bmr);
+                if (targetCaloriesEl) targetCaloriesEl.textContent = Math.round(targetCalories);
                 
                 // Kalori ilerlemesini güncelle
                 const consumed = todayData.calories || 0;
                 const target = Math.round(targetCalories);
                 const percentage = Math.min((consumed / target) * 100, 100);
                 
-                document.getElementById('consumedCalories').textContent = consumed;
-                document.getElementById('todayCalories').textContent = consumed;
+                const consumedCaloriesEl = document.getElementById('consumedCalories');
+                const todayCaloriesEl = document.getElementById('todayCalories');
+                if (consumedCaloriesEl) consumedCaloriesEl.textContent = consumed;
+                if (todayCaloriesEl) todayCaloriesEl.textContent = consumed;
                 
                 const progressCircle = document.getElementById('calorieProgress');
-                const circumference = 2 * Math.PI * 52;
-                const offset = circumference - (percentage / 100) * circumference;
-                progressCircle.style.strokeDashoffset = offset;
+                if (progressCircle) {
+                    const circumference = 2 * Math.PI * 52;
+                    const offset = circumference - (percentage / 100) * circumference;
+                    progressCircle.style.strokeDashoffset = offset;
+                }
             }
             
             // Su takibi
@@ -733,20 +739,25 @@
             const waterTarget = 8;
             const waterPercentage = Math.min((waterConsumed / waterTarget) * 100, 100);
             
-            document.getElementById('consumedWater').textContent = waterConsumed;
-            document.getElementById('todayWater').textContent = waterConsumed;
+            const consumedWaterEl = document.getElementById('consumedWater');
+            const todayWaterEl = document.getElementById('todayWater');
+            if (consumedWaterEl) consumedWaterEl.textContent = waterConsumed;
+            if (todayWaterEl) todayWaterEl.textContent = waterConsumed;
             
             const waterProgressCircle = document.getElementById('waterProgress');
-            const waterCircumference = 2 * Math.PI * 52;
-            const waterOffset = waterCircumference - (waterPercentage / 100) * waterCircumference;
-            waterProgressCircle.style.strokeDashoffset = waterOffset;
+            if (waterProgressCircle) {
+                const waterCircumference = 2 * Math.PI * 52;
+                const waterOffset = waterCircumference - (waterPercentage / 100) * waterCircumference;
+                waterProgressCircle.style.strokeDashoffset = waterOffset;
+            }
             
             // Streak gün sayısı
             const startDate = userData.startDate ? new Date(userData.startDate) : new Date();
             const today = new Date();
             const diffTime = Math.abs(today - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            document.getElementById('streakDays').textContent = diffDays;
+            const streakDaysEl = document.getElementById('streakDays');
+            if (streakDaysEl) streakDaysEl.textContent = diffDays;
             
             // Yeni elementleri de güncelle
             if (document.getElementById('streakDaysDisplay')) {

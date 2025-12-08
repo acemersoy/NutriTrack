@@ -574,9 +574,94 @@ body {
         border: 1px solid #ccc;
     }
     
-    .btn,
-    .navigation {
+    .btn {
         display: none;
+    }
+}
+
+/* NAVIGATION - Tüm sayfalarda tutarlı */
+.navigation {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    padding: 15px 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 20px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .navigation {
+    background: rgba(40, 40, 55, 0.95);
+    border: 1px solid rgba(80, 80, 100, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.nav-item {
+    color: #667eea;
+    font-size: 1.5rem;
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+[data-theme="dark"] .nav-item {
+    color: #A0B4FF;
+}
+
+.nav-item:hover, .nav-item.active {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+[data-theme="dark"] .nav-item:hover,
+[data-theme="dark"] .nav-item.active {
+    background: rgba(102, 126, 234, 0.9);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Mobil Navigation - Tutarlı boyutlar */
+@media (max-width: 768px) {
+    .navigation {
+        bottom: 15px;
+        padding: 12px 24px;
+        gap: 15px;
+    }
+    
+    .nav-item {
+        font-size: 1.3rem;
+        padding: 8px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navigation {
+        bottom: 10px;
+        padding: 10px 20px;
+        gap: 12px;
+    }
+    
+    .nav-item {
+        font-size: 1.2rem;
+        padding: 8px;
+        min-width: 38px;
+        min-height: 38px;
     }
 }
 

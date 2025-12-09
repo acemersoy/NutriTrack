@@ -171,6 +171,153 @@
             font-size: 1.2rem;
         }
 
+        /* CACHE QUICK ADD */
+        .cache-section {
+            margin: 18px 0 10px;
+            background: #f8f9ff;
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid rgba(102,126,234,0.16);
+            box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+        }
+        [data-theme="dark"] .cache-section {
+            background: rgba(26, 32, 54, 0.85);
+            border-color: rgba(102,126,234,0.28);
+        }
+        .cache-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .cache-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        [data-theme="dark"] .cache-title { color: #a0b4ff; }
+        .cache-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .cache-refresh {
+            border: 1px solid rgba(102,126,234,0.35);
+            background: white;
+            color: #667eea;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        [data-theme="dark"] .cache-refresh {
+            background: rgba(255,255,255,0.08);
+            color: #a0b4ff;
+        }
+        .cache-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+        .cache-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(102,126,234,0.08);
+            border: 1px solid rgba(102,126,234,0.16);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .cache-chip:hover {
+            background: rgba(102,126,234,0.14);
+            transform: translateY(-1px);
+        }
+        [data-theme="dark"] .cache-chip {
+            background: rgba(102,126,234,0.12);
+            border-color: rgba(102,126,234,0.28);
+        }
+        .cache-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        .cache-brand {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .cache-add-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 10px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(102,126,234,0.35);
+        }
+        .cache-empty {
+            color: var(--muted);
+            font-size: 0.9rem;
+            padding: 12px 4px;
+        }
+
+        /* Cache meal modal */
+        .cache-meal-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 12000;
+            backdrop-filter: blur(4px);
+        }
+        .cache-meal-modal.active { display: flex; }
+        .cache-meal-content {
+            background: #fff;
+            color: #1a1a1a;
+            border-radius: 14px;
+            padding: 18px;
+            width: 320px;
+            max-width: 92%;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+            border: 1px solid rgba(102,126,234,0.22);
+        }
+        [data-theme="dark"] .cache-meal-content {
+            background: rgba(26,32,54,0.95);
+            color: #fff;
+            border-color: rgba(102,126,234,0.35);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+        }
+        .cache-meal-title { font-weight: 700; margin: 0 0 10px; font-size: 1rem; }
+        .cache-meal-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .cache-meal-btn {
+            border: 1px solid rgba(102,126,234,0.35);
+            background: rgba(102,126,234,0.12);
+            color: #1a1a1a;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: true;
+            font-weight: 600;
+        }
+        .cache-meal-btn:hover { background: rgba(102,126,234,0.18); }
+        [data-theme="dark"] .cache-meal-btn {
+            background: rgba(102,126,234,0.15);
+            color: #fff;
+            border-color: rgba(102,126,234,0.45);
+        }
+        [data-theme="dark"] .cache-meal-btn:hover { background: rgba(102,126,234,0.22); }
+
         .recommendations-list {
             display: flex;
             flex-wrap: wrap;
@@ -1352,15 +1499,18 @@
                     <i class="fas fa-search"></i> Ara
                 </button>
             </div>
-            <div id="recommendationsSection" class="recommendations-section" style="display: none;">
-                <div class="recommendations-header">
-                    <i class="fas fa-star"></i>
-                    <span>Önerilen Besinler</span>
+            <div class="cache-section">
+                <div class="cache-header">
+                    <div class="cache-title"><i class="fas fa-database"></i> Son Beslendikleriniz</div>
+                    <div class="cache-actions">
+                        <button class="cache-refresh" onclick="loadCachedFoods()"><i class="fas fa-sync"></i> Yenile</button>
+                    </div>
                 </div>
-                <div id="recommendationsList" class="recommendations-list">
-                    <!-- Öneriler buraya gelecek -->
+                <div id="cacheList" class="cache-list">
+                    <div class="cache-empty">Cache dolduğunda buradan tek tıkla öğüne ekleyebilirsiniz.</div>
                 </div>
             </div>
+            
             
             <!-- TARİFLER BÖLÜMÜ -->
             <div id="recipesSection" class="recommendations-section" style="display: none;">
@@ -1376,6 +1526,19 @@
                 </div>
             </div>
             <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <!-- Cache öğün seçim modal -->
+        <div class="cache-meal-modal" id="cacheMealModal" onclick="closeCacheMealModal(event)">
+            <div class="cache-meal-content">
+                <div class="cache-meal-title">Hangi öğüne eklemek istersiniz?</div>
+                <div class="cache-meal-buttons">
+                    <button class="cache-meal-btn" onclick="confirmAddCachedFood('breakfast')">🍳 Kahvaltı</button>
+                    <button class="cache-meal-btn" onclick="confirmAddCachedFood('lunch')">🍽️ Öğle</button>
+                    <button class="cache-meal-btn" onclick="confirmAddCachedFood('dinner')">🌙 Akşam</button>
+                    <button class="cache-meal-btn" onclick="confirmAddCachedFood('snack')">🍎 Ara Öğün</button>
+                </div>
+            </div>
         </div>
 
         <div class="nutrition-details" id="nutritionDetails">
@@ -2619,6 +2782,7 @@
             updateTodayFoodsList();
             updateMicronutrients(); // Mikro besinleri güncelle
             showRecipes(); // Tarifleri göster
+            loadCachedFoods(); // Cache'den hızlı ekleme listesi
             
             // Öğün değiştiğinde önerileri ve tarifleri güncelle
             const mealTypeSelect = document.getElementById('mealType');
@@ -2637,6 +2801,100 @@
 
         // MİKRO BESİN TAKİBİ FONKSİYONLARI
         let currentMicroTab = 'all';
+
+        // CACHE'DEN HIZLI EKLEME
+        let selectedCacheFoodId = null;
+
+        async function loadCachedFoods() {
+            const list = document.getElementById('cacheList');
+            if (!list) return;
+            if (typeof foodCache === 'undefined') {
+                list.innerHTML = '<div class="cache-empty">Cache sistemi hazır değil.</div>';
+                return;
+            }
+            list.innerHTML = '<div class="cache-empty"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>';
+            try {
+                const foods = await foodCache.searchFoods('');
+                if (!foods || foods.length === 0) {
+                    list.innerHTML = '<div class="cache-empty">Henüz cache dolu değil. Aradığınız besinler otomatik kaydedilecek.</div>';
+                    return;
+                }
+                const topFoods = foods.slice(0, 30);
+                list.innerHTML = topFoods.map(food => `
+                    <div class="cache-chip" onclick="openCacheMealPicker(${food.fdcId})">
+                        <div>
+                            <div class="cache-name">${food.description || 'Bilinmeyen'}</div>
+                            <div class="cache-brand">${food.brandOwner || 'Genel'}</div>
+                        </div>
+                        <button class="cache-add-btn" type="button">Ekle</button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Cache okuma hatası', error);
+                list.innerHTML = '<div class="cache-empty">Cache okunamadı.</div>';
+            }
+        }
+
+        function openCacheMealPicker(fdcId) {
+            selectedCacheFoodId = fdcId;
+            const modal = document.getElementById('cacheMealModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeCacheMealModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                const modal = document.getElementById('cacheMealModal');
+                if (modal) modal.classList.remove('active');
+                selectedCacheFoodId = null;
+            }
+        }
+
+        async function confirmAddCachedFood(mealType) {
+            if (!selectedCacheFoodId) {
+                closeCacheMealModal();
+                return;
+            }
+            await addCachedFood(selectedCacheFoodId, mealType);
+            closeCacheMealModal();
+        }
+
+        async function addCachedFood(fdcId, mealTypeOverride = null) {
+            if (typeof foodCache === 'undefined') {
+                showNotification('Cache sistemi hazır değil', 'error');
+                return;
+            }
+            try {
+                const cached = await foodCache.getFood(fdcId);
+                if (!cached) {
+                    showNotification('Cache kaydı bulunamadı veya süresi dolmuş', 'error');
+                    loadCachedFoods();
+                    return;
+                }
+                // currentFood ve baseNutrients hazırla
+                currentFood = cached;
+                baseNutrients = {};
+                cached.foodNutrients.forEach(nutrient => {
+                    baseNutrients[nutrient.nutrientName] = {
+                        value: nutrient.value,
+                        unit: nutrient.unitName
+                    };
+                });
+                // Besin bilgilerini göster
+                document.getElementById('foodTitle').textContent = cached.description || 'Bilinmeyen';
+                document.getElementById('foodBrand').textContent = cached.brandOwner || 'Genel';
+                document.getElementById('nutritionDetails').style.display = 'block';
+                // Seçilen öğün ayarla (override varsa kullan)
+                const mealSelect = document.getElementById('mealType');
+                if (mealSelect && mealTypeOverride) {
+                    mealSelect.value = mealTypeOverride;
+                }
+                // Seçilen öğün ve miktarı kullanarak ekle
+                addFood();
+            } catch (error) {
+                console.error('Cache ekleme hatası', error);
+                showNotification('Cache\'den eklenemedi', 'error');
+            }
+        }
 
         // Mikro besinleri güncelle
         function updateMicronutrients() {

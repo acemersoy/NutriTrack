@@ -207,97 +207,6 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
-        /* TRAINING SECTION */
-        .training-section {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.4);
-        }
-
-        [data-theme="dark"] .training-section {
-            background: rgba(25, 25, 35, 0.9);
-            border: 1px solid rgba(80,80,100,0.35);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.45);
-        }
-
-        .training-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-        }
-
-        .training-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65));
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            min-height: 160px;
-            display: flex;
-            align-items: flex-end;
-            color: #1a1a1a;
-        }
-
-        [data-theme="dark"] .training-card {
-            background: linear-gradient(135deg, rgba(40,40,55,0.85), rgba(30,30,40,0.75));
-            border-color: rgba(80,80,100,0.4);
-            color: rgba(255,255,255,0.9);
-        }
-
-        .training-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.16);
-            border-color: rgba(102,126,234,0.6);
-        }
-
-        .training-card img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.6;
-            filter: saturate(1.05);
-            transition: opacity 0.2s ease;
-        }
-
-        .training-card:hover img {
-            opacity: 0.8;
-        }
-
-        .training-card .overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55));
-            pointer-events: none;
-        }
-
-        .training-card .content {
-            position: relative;
-            padding: 14px 16px;
-            z-index: 2;
-        }
-
-        .training-card h4 {
-            margin: 0;
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
-
-        .training-card p {
-            margin: 6px 0 0;
-            font-size: 0.9rem;
-            opacity: 0.9;
-            line-height: 1.4;
-        }
-
         /* BMR SECTION - Material Design & WCAG */
         .bmr-section {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -901,7 +810,54 @@
         }
 
         /* NAVIGATION - Material Design & WCAG */
-        /* Navigation stilleri styles.css'de tanımlı */
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 15px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .navigation {
+            background: rgba(40, 40, 55, 0.95); /* Material Design: Elevated Surface */
+            border: 1px solid rgba(80, 80, 100, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .nav-item {
+            color: #667eea;
+            font-size: 1.5rem;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        [data-theme="dark"] .nav-item {
+            color: #A0B4FF;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        [data-theme="dark"] .nav-item:hover,
+        [data-theme="dark"] .nav-item.active {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
 
         @media (max-width: 768px) {
             .header h1 {
@@ -1008,55 +964,6 @@
                     <div class="bmr-item-value" id="targetFat">0g</div>
                     <div class="bmr-item-label">Hedef Yağ</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="training-section">
-            <h2 class="section-title">
-                <i class="fas fa-running"></i>
-                Antrenman Takibi
-            </h2>
-            <div class="training-grid">
-                <a class="training-card" href="fitness.html">
-                    <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" alt="Fitness">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <h4>Fitness</h4>
-                        <p>Güç ve dayanıklılık odaklı haftalık plan</p>
-                    </div>
-                </a>
-                <a class="training-card" href="yoga.html">
-                    <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80" alt="Yoga">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <h4>Yoga</h4>
-                        <p>Esneklik ve zihin sakinliği için akışlar</p>
-                    </div>
-                </a>
-                <a class="training-card" href="pilates.html">
-                    <img src="https://images.unsplash.com/photo-1546484959-f9a9c6c915b8?auto=format&fit=crop&w=800&q=80" alt="Pilates">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <h4>Pilates</h4>
-                        <p>Core güçlendirme ve duruş geliştirme</p>
-                    </div>
-                </a>
-                <a class="training-card" href="hiit.html">
-                    <img src="https://images.unsplash.com/photo-1518611012118-6f2e27b73d19?auto=format&fit=crop&w=800&q=80" alt="HIIT">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <h4>HIIT</h4>
-                        <p>Yüksek yoğunluklu kardiyo intervalleri</p>
-                    </div>
-                </a>
-                <a class="training-card" href="cycling.html">
-                    <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=800&q=80" alt="Bisiklet">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <h4>Bisiklet</h4>
-                        <p>Dayanıklılık ve yağ yakımı için turlar</p>
-                    </div>
-                </a>
             </div>
         </div>
 
@@ -1173,48 +1080,6 @@
             <div id="historyEmpty" style="text-align: center; padding: 40px; color: #666; display: none;">
                 <i class="fas fa-utensils" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
                 <p>Henüz geçmiş beslenme kaydı bulunmamaktadır</p>
-            </div>
-        </div>
-
-        <div class="cache-section">
-            <h2 class="section-title">
-                <i class="fas fa-database"></i>
-                Besin Veritabanı Önbelleği
-            </h2>
-            <div class="cache-stats" id="cacheStats">
-                <div class="cache-stat-item">
-                    <div class="cache-stat-value" id="cacheTotal">-</div>
-                    <div class="cache-stat-label">Toplam Besin</div>
-                </div>
-                <div class="cache-stat-item">
-                    <div class="cache-stat-value" id="cacheValid">-</div>
-                    <div class="cache-stat-label">Geçerli</div>
-                </div>
-                <div class="cache-stat-item">
-                    <div class="cache-stat-value" id="cacheExpired">-</div>
-                    <div class="cache-stat-label">Süresi Dolmuş</div>
-                </div>
-                <div class="cache-stat-item">
-                    <div class="cache-stat-value" id="cacheSearches">-</div>
-                    <div class="cache-stat-label">Toplam Arama</div>
-                </div>
-            </div>
-            <div class="cache-info">
-                <p><i class="fas fa-info-circle"></i> Sık kullanılan besinler otomatik olarak önbelleğe alınır. Bu sayede offline modda da arama yapabilir ve daha hızlı sonuç alırsınız.</p>
-                <div class="cache-size" id="cacheSize">
-                    <strong>Kullanılan Alan:</strong> <span id="cacheSizeValue">-</span> MB
-                </div>
-            </div>
-            <div class="cache-actions">
-                <button class="cache-btn" onclick="cleanExpiredCache()">
-                    <i class="fas fa-broom"></i> Süresi Dolmuşları Temizle
-                </button>
-                <button class="cache-btn cache-btn-danger" onclick="clearCache()">
-                    <i class="fas fa-trash"></i> Tüm Cache'i Temizle
-                </button>
-                <button class="cache-btn" onclick="updateCacheStats()">
-                    <i class="fas fa-sync"></i> Yenile
-                </button>
             </div>
         </div>
     </div>
@@ -1795,110 +1660,6 @@
             }
         `;
         document.head.appendChild(style);
-    </script>
-
-    <script>
-        // Cache yönetim fonksiyonları
-        window.getCacheStats = async function() {
-            if (typeof foodCache === 'undefined') {
-                return { error: 'Cache sistemi yüklenmedi' };
-            }
-            try {
-                const stats = await foodCache.getStats();
-                const size = await foodCache.getCacheSize();
-                return { ...stats, size };
-            } catch (error) {
-                console.error('Cache istatistik hatası:', error);
-                return { error: error.message };
-            }
-        };
-
-        window.clearCache = async function() {
-            if (typeof foodCache === 'undefined') {
-                showNotification('Cache sistemi yüklenmedi', 'error');
-                return;
-            }
-            try {
-                await foodCache.clearAll();
-                showNotification('✅ Cache temizlendi!', 'success');
-                // İstatistikleri güncelle (biraz bekle ki IndexedDB güncellensin)
-                setTimeout(() => {
-                    if (typeof updateCacheStats === 'function') {
-                        updateCacheStats();
-                    }
-                }, 300);
-            } catch (error) {
-                console.error('Cache temizleme hatası:', error);
-                showNotification('Cache temizlenirken hata oluştu', 'error');
-            }
-        };
-
-        window.cleanExpiredCache = async function() {
-            if (typeof foodCache === 'undefined') {
-                showNotification('Cache sistemi yüklenmedi', 'error');
-                return;
-            }
-            try {
-                const deleted = await foodCache.cleanExpired();
-                showNotification(`🧹 ${deleted} süresi dolmuş besin temizlendi`, 'success');
-                // İstatistikleri güncelle (biraz bekle ki IndexedDB güncellensin)
-                setTimeout(() => {
-                    if (typeof updateCacheStats === 'function') {
-                        updateCacheStats();
-                    }
-                }, 300);
-            } catch (error) {
-                console.error('Cache temizleme hatası:', error);
-                showNotification('Cache temizlenirken hata oluştu', 'error');
-            }
-        };
-
-        // Cache istatistiklerini güncelle
-        async function updateCacheStats() {
-            try {
-                const stats = await window.getCacheStats();
-                
-                if (stats.error) {
-                    console.warn('Cache istatistikleri alınamadı:', stats.error);
-                    return;
-                }
-
-                // İstatistikleri göster
-                document.getElementById('cacheTotal').textContent = stats.total || 0;
-                document.getElementById('cacheValid').textContent = stats.valid || 0;
-                document.getElementById('cacheExpired').textContent = stats.expired || 0;
-                document.getElementById('cacheSearches').textContent = stats.totalSearches || 0;
-
-                // Cache boyutu - Sadece foods store'unun gerçek boyutu
-                if (stats.size) {
-                    if (stats.size.used !== 'N/A' && stats.size.used !== undefined) {
-                        const sizeMB = parseFloat(stats.size.used);
-                        // 0.01 MB'den küçükse KB olarak göster
-                        if (sizeMB < 0.01) {
-                            document.getElementById('cacheSizeValue').textContent = 
-                                (stats.size.usedKB || '0') + ' KB';
-                        } else {
-                            document.getElementById('cacheSizeValue').textContent = 
-                                sizeMB.toFixed(2) + ' MB';
-                        }
-                    } else {
-                        document.getElementById('cacheSizeValue').textContent = '0 MB';
-                    }
-                } else {
-                    document.getElementById('cacheSizeValue').textContent = '0 MB';
-                }
-            } catch (error) {
-                console.error('Cache istatistik hatası:', error);
-            }
-        }
-
-        // Sayfa yüklendiğinde cache istatistiklerini göster
-        document.addEventListener('DOMContentLoaded', () => {
-            // db.js ve main.js yüklendikten sonra çalıştır
-            setTimeout(() => {
-                updateCacheStats();
-            }, 1000);
-        });
     </script>
 </body>
 </html>

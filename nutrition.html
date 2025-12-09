@@ -1831,6 +1831,14 @@
 
             localStorage.setItem('nutritrack_today', JSON.stringify(todayData));
             
+            // App state'i senkronize et ki mikro besin hesapları anında güncellensin
+            if (typeof app !== 'undefined') {
+                app.todayData = todayData;
+                if (typeof app.saveTodayData === 'function') {
+                    app.saveTodayData();
+                }
+            }
+            
             // Geçmiş verileri de kaydet (tarih bazlı)
             const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD formatı
             let historyData = JSON.parse(localStorage.getItem('nutritrack_history') || '{}');
@@ -1900,6 +1908,7 @@
             localStorage.setItem('nutritrack_history', JSON.stringify(historyData));
             
             updateTodayFoodsList();
+            updateMicronutrients();
             
             // Bildirim mesajı
             if (existingFoodIndex !== -1) {
@@ -2177,6 +2186,14 @@
                 
                 localStorage.setItem('nutritrack_today', JSON.stringify(todayData));
                 
+                // App state'ini güncelle ki mikro besinler anında hesaplansın
+                if (typeof app !== 'undefined') {
+                    app.todayData = todayData;
+                    if (typeof app.saveTodayData === 'function') {
+                        app.saveTodayData();
+                    }
+                }
+                
                 showNotification('Besin kaldırıldı', 'success');
                 
                 // Geçmiş verilerden de sil
@@ -2193,6 +2210,7 @@
                 }
                 
                 updateTodayFoodsList();
+                updateMicronutrients();
                 showNotification(`${removedFood.name} silindi! (-${removedFood.calories} kcal)`);
             }
         }

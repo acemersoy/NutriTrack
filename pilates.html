@@ -112,6 +112,56 @@
         .empty-day { opacity: 0.5; font-style: italic; }
         .theme-toggle { position: fixed; top: 16px; right: 16px; width: 44px; height: 44px; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; }
+        /* Warm-up Alert */
+        .warmup-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(139,92,246,0.18));
+            border: 1px solid rgba(168,85,247,0.28);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            margin-bottom: 14px;
+            align-items: center;
+            animation: float-warmup 3s ease-in-out infinite;
+        }
+        [data-theme="dark"] .warmup-card {
+            background: linear-gradient(135deg, rgba(168,85,247,0.16), rgba(139,92,246,0.22));
+            border-color: rgba(168,85,247,0.35);
+        }
+        .warmup-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #fff;
+            color: #8b5cf6;
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+        }
+        [data-theme="dark"] .warmup-icon {
+            background: rgba(255,255,255,0.9);
+        }
+        .warmup-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 0 0 4px;
+        }
+        .warmup-steps {
+            margin: 0;
+            padding-left: 16px;
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .warmup-steps li + li { margin-top: 4px; }
+        @keyframes float-warmup {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+            100% { transform: translateY(0); }
+        }
         @media (max-width: 768px) {
             body { padding: 16px 12px 80px; }
             .plan-container { padding: 18px; }
@@ -125,6 +175,18 @@
     <div class="plan-container">
         <h1><i class="fas fa-circle-notch"></i> Pilates Programı</h1>
         <p class="subtitle">Core, denge ve mobilite odaklı haftalık plan</p>
+        <div class="warmup-card">
+            <div class="warmup-icon"><i class="fas fa-fire"></i></div>
+            <div>
+                <div class="warmup-title">Isınmadan başlamayın!</div>
+                <ul class="warmup-steps">
+                    <li>5-7 dk hafif kardiyo (tempolu yürüyüş/eklem mobilizasyonu).</li>
+                    <li>Omuz ve kalça dairesel açmalar (15-20 tekrar).</li>
+                    <li>Cat-cow + hamstring dinamik esnetme (2 set x 10).</li>
+                    <li>Core aktivasyonu: dead bug veya plank 2x20 sn.</li>
+                </ul>
+            </div>
+        </div>
         <div class="table-wrapper">
         <table id="workoutTable">
             <thead>

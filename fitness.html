@@ -563,6 +563,56 @@
             overflow-x: auto;
             border-radius: 12px;
         }
+        /* Warm-up Alert */
+        .warmup-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(102,126,234,0.12), rgba(118,75,162,0.18));
+            border: 1px solid rgba(102,126,234,0.28);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            margin-bottom: 14px;
+            align-items: center;
+            animation: float-warmup 3s ease-in-out infinite;
+        }
+        [data-theme="dark"] .warmup-card {
+            background: linear-gradient(135deg, rgba(102,126,234,0.16), rgba(118,75,162,0.22));
+            border-color: rgba(102,126,234,0.35);
+        }
+        .warmup-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #fff;
+            color: #667eea;
+            display: grid;
+            place-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+        }
+        [data-theme="dark"] .warmup-icon {
+            background: rgba(255,255,255,0.9);
+        }
+        .warmup-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 0 0 4px;
+        }
+        .warmup-steps {
+            margin: 0;
+            padding-left: 16px;
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .warmup-steps li + li { margin-top: 4px; }
+        @keyframes float-warmup {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+            100% { transform: translateY(0); }
+        }
         @media (max-width: 768px) {
             body { padding: 16px 12px 80px; }
             .plan-container { padding: 18px; }
@@ -576,6 +626,18 @@
     <div class="plan-container">
         <h1><i class="fas fa-dumbbell"></i> Fitness Programı</h1>
         <p class="subtitle">Güç + kardiyo dengesiyle haftalık düzen</p>
+        <div class="warmup-card">
+            <div class="warmup-icon"><i class="fas fa-fire"></i></div>
+            <div>
+                <div class="warmup-title">Isınmadan başlamayın!</div>
+                <ul class="warmup-steps">
+                    <li>5-8 dk hafif kardiyo (yürüyüş/rower/bisiklet).</li>
+                    <li>Eklemsel mobilizasyon: omuz, kalça, ayak bileği dairesel açmalar.</li>
+                    <li>Hareket hazırlığı: bodyweight squat, hip hinge, band pull-apart 2x10-12.</li>
+                    <li>Sete başlamadan önce yükün %40-50’siyle 1-2 hazırlık seti.</li>
+                </ul>
+            </div>
+        </div>
         <div class="table-wrapper">
         <table id="workoutTable">
             <thead>

@@ -291,6 +291,40 @@
             z-index: 2;
         }
 
+        .warning-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, #ffb347, #ff6b6b);
+            color: #1a1a1a;
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 6px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+            animation: pulse-warning 1.8s ease-in-out infinite;
+            text-decoration: none;
+            letter-spacing: 0.01em;
+        }
+
+        .warning-badge i {
+            color: #1a1a1a;
+        }
+
+        [data-theme="dark"] .warning-badge {
+            color: #0f172a;
+            box-shadow: 0 12px 26px rgba(0,0,0,0.35);
+        }
+
+        @keyframes pulse-warning {
+            0% { transform: translateY(0) scale(1); opacity: 0.95; }
+            50% { transform: translateY(-2px) scale(1.04); opacity: 1; box-shadow: 0 14px 28px rgba(255,107,107,0.35); }
+            100% { transform: translateY(0) scale(1); opacity: 0.95; }
+        }
+
         .training-card h4 {
             margin: 0;
             font-size: 1.05rem;
@@ -1028,6 +1062,7 @@
             </h2>
             <div class="training-grid">
                 <a class="training-card" href="fitness.html">
+                    <div class="warning-badge"><i class="fas fa-exclamation-triangle"></i> Önce ısın</div>
                     <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" alt="Fitness">
                     <div class="overlay"></div>
                     <div class="content">
@@ -1036,6 +1071,7 @@
                     </div>
                 </a>
                 <a class="training-card" href="yoga.html">
+                    <div class="warning-badge"><i class="fas fa-exclamation-triangle"></i> Önce ısın</div>
                     <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80" alt="Yoga">
                     <div class="overlay"></div>
                     <div class="content">
@@ -1044,6 +1080,7 @@
                     </div>
                 </a>
                 <a class="training-card" href="pilates.html">
+                    <div class="warning-badge"><i class="fas fa-exclamation-triangle"></i> Önce ısın</div>
                     <img src="https://images.unsplash.com/photo-1546484959-f9a9c6c915b8?auto=format&fit=crop&w=800&q=80" alt="Pilates">
                     <div class="overlay"></div>
                     <div class="content">
@@ -1052,6 +1089,7 @@
                     </div>
                 </a>
                 <a class="training-card" href="hiit.html">
+                    <div class="warning-badge"><i class="fas fa-exclamation-triangle"></i> Önce ısın</div>
                     <img src="https://images.unsplash.com/photo-1518611012118-6f2e27b73d19?auto=format&fit=crop&w=800&q=80" alt="HIIT">
                     <div class="overlay"></div>
                     <div class="content">
@@ -1060,6 +1098,7 @@
                     </div>
                 </a>
                 <a class="training-card" href="cycling.html">
+                    <div class="warning-badge"><i class="fas fa-exclamation-triangle"></i> Önce ısın</div>
                     <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=800&q=80" alt="Bisiklet">
                     <div class="overlay"></div>
                     <div class="content">

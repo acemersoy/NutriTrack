@@ -36,8 +36,13 @@
     "url": "https://github.com/KULLANICI_ADI/nutritrack/issues"
   },
   "homepage": "https://github.com/KULLANICI_ADI/nutritrack#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  },
   "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "eslint": "^9.39.2",
     "serve": "^14.2.0"
   },
   "engines": {
@@ -50,4 +55,3 @@
     "not dead"
   ]
 }
-

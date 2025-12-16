@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bisiklet Programı | NutriTrack</title>
+    <!-- Tema kontrolü - sayfa render edilmeden önce -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('nutritrack_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: rgba(255,255,255,0.96);
+            --border: rgba(15,23,42,0.08);
+            --text: #0f172a;
+            --muted: #475569;
+            --surface: #f8fafc;
+            --accent: linear-gradient(135deg, #3b82f6, #2563eb);
+            --item: rgba(59, 130, 246, 0.12);
+            --shadow: 0 16px 40px rgba(15,23,42,0.12);
+        }
+        [data-theme="dark"] {
+            --bg: linear-gradient(135deg, #0b1725, #102035);
+            --card: rgba(12, 18, 30, 0.9);
+            --border: rgba(255,255,255,0.08);
+            --text: #e6edf7;
+            --muted: #d8dcff;
+            --surface: rgba(255,255,255,0.04);
+            --accent: linear-gradient(135deg, #3b82f6, #2563eb);
+            --item: rgba(59, 130, 246, 0.15);
+            --shadow: 0 20px 50px rgba(0,0,0,0.35);
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 24px 16px 80px; transition: background 0.3s ease, color 0.3s ease; }
+        .plan-container { max-width: 1100px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); border-radius: 20px; padding: 28px; backdrop-filter: blur(18px); }
+        h1 { display: flex; align-items: center; gap: 10px; font-size: 1.8rem; margin-bottom: 6px; }
+        .subtitle { margin-bottom: 18px; opacity: 0.9; color: var(--muted); }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; background: var(--surface); border-radius: 12px; overflow: hidden; }
+        th, td { padding: 12px 14px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+        th { background: rgba(255,255,255,0.08); }
+        tr:last-child td { border-bottom: none; }
+        .exercise-item { background: var(--item); padding: 8px 12px; border-radius: 8px; margin: 4px 0; display: flex; justify-content: space-between; align-items: center; }
+        .exercise-info { flex: 1; }
+        .exercise-name { font-weight: 600; margin-bottom: 4px; }
+        .exercise-details { font-size: 0.85rem; opacity: 0.8; }
+        .exercise-actions { display: flex; gap: 8px; }
+        .btn-icon { background: rgba(255,255,255,0.1); border: none; color: #e6edf7; padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn-icon:hover { background: rgba(255,255,255,0.2); }
+        .btn-add { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 8px; transition: all 0.2s; }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+        .btn-complete { background: rgba(34, 197, 94, 0.2) !important; color: #22c55e !important; }
+        .btn-complete:hover { background: rgba(34, 197, 94, 0.3) !important; }
+        .progress-section { margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--border); }
+        .progress-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .progress-day { background: var(--surface); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .progress-day-header { font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; color: var(--text); display: flex; justify-content: space-between; align-items: center; }
+        .progress-exercise { background: var(--item); padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .progress-exercise-info { flex: 1; }
+        .progress-exercise-name { font-weight: 600; margin-bottom: 4px; }
+        .progress-exercise-details { font-size: 0.85rem; opacity: 0.8; }
+        .progress-exercise-time { font-size: 0.85rem; color: var(--muted); }
+        .progress-empty { text-align: center; padding: 40px; color: var(--muted); opacity: 0.6; }
+        .progress-empty i { font-size: 3rem; margin-bottom: 10px; opacity: 0.3; }
+        .toast { position: fixed; top: 20px; right: 20px; min-width: 300px; max-width: 500px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; box-shadow: var(--shadow); z-index: 10002; display: flex; align-items: center; gap: 12px; animation: slideInRight 0.3s ease; backdrop-filter: blur(10px); }
+        .toast.error { border-left: 4px solid #ef4444; }
+        .toast.warning { border-left: 4px solid #f59e0b; }
+        .toast.success { border-left: 4px solid #22c55e; }
+        .toast-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .toast.error .toast-icon { color: #ef4444; }
+        .toast.warning .toast-icon { color: #f59e0b; }
+        .toast.success .toast-icon { color: #22c55e; }
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 600; margin-bottom: 4px; color: var(--text); }
+        .toast-message { font-size: 0.9rem; color: var(--muted); }
+        .toast-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: all 0.2s; }
+        .toast-close:hover { background: rgba(0,0,0,0.05); color: var(--text); }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .confirm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10003; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .confirm-modal.active { display: flex; }
+        .confirm-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; max-width: 400px; width: 90%; box-shadow: var(--shadow); backdrop-filter: blur(20px); }
+        .confirm-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; color: var(--text); display: flex; align-items: center; gap: 10px; }
+        .confirm-message { color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+        .confirm-actions { display: flex; gap: 12px; justify-content: flex-end; }
+        .confirm-btn { padding: 10px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+        .confirm-btn-cancel { background: rgba(255,255,255,0.1); color: var(--text); }
+        .confirm-btn-cancel:hover { background: rgba(255,255,255,0.2); }
+        .confirm-btn-confirm { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .confirm-btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.4); }
+        .confirm-btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .confirm-btn-danger:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+        .history-section { margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--border); }
+        .history-day { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .history-day-info { flex: 1; }
+        .history-day-date { font-weight: 600; margin-bottom: 4px; }
+        .history-day-count { font-size: 0.85rem; color: var(--muted); }
+        .weekly-chart-container { margin-top: 30px; background: var(--surface); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+        .chart-wrapper { position: relative; height: 300px; margin-top: 20px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; width: 90%; max-width: 500px; backdrop-filter: blur(20px); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 1.3rem; font-weight: 600; }
+        .close-btn { background: none; border: none; color: #e6edf7; font-size: 1.5rem; cursor: pointer; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-input { width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 1rem; }
+        .form-input:focus { outline: none; border-color: #3b82f6; background: rgba(255,255,255,0.12); }
+        .form-input::placeholder { color: rgba(99,115,129,0.6); }
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500; flex: 1; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #e6edf7; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 500; }
+        a.back { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; color: #3b82f6; text-decoration: none; }
+        .empty-day { opacity: 0.5; font-style: italic; }
+        .theme-toggle { position: fixed; top: 16px; right: 16px; width: 44px; height: 44px; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .table-wrapper { overflow-x: auto; border-radius: 12px; }
+        @media (max-width: 768px) {
+            body { padding: 16px 12px 80px; }
+            .plan-container { padding: 18px; }
+            table { min-width: 680px; }
+            th, td { padding: 10px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-sun" id="themeIcon"></i></button>
+    <div class="plan-container">
+        <h1><i class="fas fa-bicycle"></i> Bisiklet Programı</h1>
+        <p class="subtitle">Dayanıklılık, tempo ve güç odaklı haftalık rota</p>
+        <div class="table-wrapper">
+        <table id="workoutTable">
+            <thead>
+                <tr><th>Gün</th><th>Rota / Çalışma</th><th>Süre / Mesafe</th><th>Not</th><th>İşlem</th></tr>
+            </thead>
+            <tbody id="workoutTableBody"></tbody>
+        </table>
+        </div>
+        <a class="back" href="profile.html"><i class="fas fa-arrow-left"></i> Profile dön</a>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <h2 class="progress-title">
+                <i class="fas fa-chart-line"></i>
+                Bugünkü İlerleme
+            </h2>
+            <div id="progressContainer"></div>
+        </div>
+
+        <!-- History Section -->
+        <div class="history-section">
+            <h2 class="progress-title">
+                <i class="fas fa-history"></i>
+                Geçmiş Günler
+            </h2>
+            <div id="historyContainer"></div>
+        </div>
+
+        <!-- Weekly Chart Section -->
+        <div class="history-section">
+            <h2 class="progress-title">
+                <i class="fas fa-chart-bar"></i>
+                Haftalık Özet
+            </h2>
+            <div class="weekly-chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-content">
+            <div class="confirm-title">
+                <i class="fas fa-exclamation-triangle" id="confirmIcon"></i>
+                <span id="confirmTitle">Onay</span>
+            </div>
+            <div class="confirm-message" id="confirmMessage"></div>
+            <div class="confirm-actions">
+                <button class="confirm-btn confirm-btn-cancel" id="confirmCancel">İptal</button>
+                <button class="confirm-btn confirm-btn-confirm" id="confirmOk">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="exerciseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Hareket Ekle</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="exerciseForm" onsubmit="saveExercise(event)">
+                <input type="hidden" id="editDay" value="">
+                <input type="hidden" id="editIndex" value="">
+                <div class="form-group">
+                    <label class="form-label">Rota / Çalışma Adı</label>
+                    <input type="text" class="form-input" id="exerciseName" placeholder="Örn: Hafif toparlanma turu" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Süre (dakika)</label>
+                    <input type="number" class="form-input" id="exerciseSets" placeholder="Örn: 30" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mesafe / Detay</label>
+                    <input type="text" class="form-input" id="exerciseReps" placeholder="Örn: 15 km veya Z1-Z2" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Not (Opsiyonel)</label>
+                    <input type="text" class="form-input" id="exerciseNote" placeholder="Örn: Yüksek kadans, düşük güç">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const SPORT_TYPE = 'cycling';
+        const DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+        let workoutData = {};
+        let progressData = {};
+        let weeklyChart = null;
+        // Tema
+        function applyTheme(theme, enableTransition = false) {
+            if (enableTransition) {
+                document.documentElement.classList.add('theme-transition');
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('nutritrack_theme', theme);
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+        function toggleTheme() {
+            const current = localStorage.getItem('nutritrack_theme') || 'light';
+            const next = current === 'light' ? 'dark' : 'light';
+            applyTheme(next, true); // true = transition aktif
+            setTimeout(() => { renderWeeklyChart(); }, 100);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tema zaten <head> içinde uygulandı, sadece icon'u güncelle
+            const savedTheme = localStorage.getItem('nutritrack_theme') || 'light';
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+            loadWorkoutData();
+            loadProgressData();
+            renderTable();
+            renderProgress();
+            renderHistory();
+            renderWeeklyChart();
+        });
+        function loadWorkoutData() {
+            const saved = localStorage.getItem(`nutritrack_workout_${SPORT_TYPE}`);
+            if (saved) {
+                workoutData = JSON.parse(saved);
+            } else {
+                workoutData = {};
+                DAYS.forEach(day => { workoutData[day] = []; });
+            }
+        }
+        function saveWorkoutData() {
+            localStorage.setItem(`nutritrack_workout_${SPORT_TYPE}`, JSON.stringify(workoutData));
+        }
+        function loadProgressData() {
+            const today = new Date().toISOString().split('T')[0];
+            const saved = localStorage.getItem(`nutritrack_progress_${SPORT_TYPE}_${today}`);
+            if (saved) {
+                progressData = JSON.parse(saved);
+            } else {
+                progressData = {};
+            }
+        }
+        function saveProgressData() {
+            const today = new Date().toISOString().split('T')[0];
+            localStorage.setItem(`nutritrack_progress_${SPORT_TYPE}_${today}`, JSON.stringify(progressData));
+        }
+        function getTodayDay() {
+            const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+            const today = new Date();
+            return days[today.getDay()];
+        }
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', success: 'fa-check-circle', info: 'fa-info-circle' };
+            toast.innerHTML = `<i class="fas ${icons[type] || icons.info} toast-icon"></i><div class="toast-content"><div class="toast-message">${message}</div></div><button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentElement) { toast.style.animation = 'slideInRight 0.3s ease reverse'; setTimeout(() => toast.remove(), 300); } }, 4000);
+        }
+        function showConfirm(message, title = 'Onay', type = 'confirm') {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                const confirmTitle = document.getElementById('confirmTitle');
+                const confirmMessage = document.getElementById('confirmMessage');
+                const confirmIcon = document.getElementById('confirmIcon');
+                const confirmOk = document.getElementById('confirmOk');
+                const confirmCancel = document.getElementById('confirmCancel');
+                confirmTitle.textContent = title;
+                confirmMessage.textContent = message;
+                if (type === 'danger') {
+                    confirmIcon.className = 'fas fa-trash-alt';
+                    confirmIcon.style.color = '#ef4444';
+                    confirmOk.className = 'confirm-btn confirm-btn-danger';
+                    confirmOk.textContent = 'Sil';
+                } else {
+                    confirmIcon.className = 'fas fa-exclamation-triangle';
+                    confirmIcon.style.color = '#f59e0b';
+                    confirmOk.className = 'confirm-btn confirm-btn-confirm';
+                    confirmOk.textContent = 'Tamam';
+                }
+                modal.classList.add('active');
+                const handleConfirm = () => { modal.classList.remove('active'); confirmOk.removeEventListener('click', handleConfirm); confirmCancel.removeEventListener('click', handleCancel); resolve(true); };
+                const handleCancel = () => { modal.classList.remove('active'); confirmOk.removeEventListener('click', handleConfirm); confirmCancel.removeEventListener('click', handleCancel); resolve(false); };
+                confirmOk.addEventListener('click', handleConfirm);
+                confirmCancel.addEventListener('click', handleCancel);
+                modal.addEventListener('click', function(e) { if (e.target === modal) { handleCancel(); } });
+            });
+        }
+        function addToProgress(day, exerciseIndex) {
+            const todayDay = getTodayDay();
+            if (day !== todayDay) {
+                showToast(`Bu hareket ${day} günü için. Bugün ${todayDay}.`, 'warning');
+                return;
+            }
+            const exercise = workoutData[day][exerciseIndex];
+            if (!exercise) return;
+            const today = new Date().toISOString().split('T')[0];
+            if (!progressData[today]) {
+                progressData[today] = [];
+            }
+            const exists = progressData[today].some(ex => 
+                ex.name === exercise.name && 
+                ex.sets === exercise.sets && 
+                ex.reps === exercise.reps
+            );
+            if (exists) {
+                showToast('Bu hareket zaten bugünkü ilerlemeye eklenmiş!', 'warning');
+                return;
+            }
+            const progressItem = {
+                ...exercise,
+                completedAt: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+            };
+            progressData[today].push(progressItem);
+            saveProgressData();
+            renderProgress();
+            renderHistory();
+            renderWeeklyChart();
+            showToast(`${exercise.name} eklendi!`, 'success');
+        }
+        function renderProgress() {
+            const container = document.getElementById('progressContainer');
+            const today = new Date().toISOString().split('T')[0];
+            const todayDay = getTodayDay();
+            const todayProgress = progressData[today] || [];
+            if (todayProgress.length === 0) {
+                container.innerHTML = `
+                    <div class="progress-empty">
+                        <i class="fas fa-bicycle"></i>
+                        <p>Bugün henüz hareket tamamlanmadı.</p>
+                        <p style="font-size: 0.9rem; margin-top: 8px;">Yukarıdaki tablodan hareketleri tamamlayarak ilerlemenizi kaydedin.</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = `
+                <div class="progress-day">
+                    <div class="progress-day-header">
+                        <span>${todayDay} - ${today}</span>
+                        <span style="font-size: 0.9rem; color: var(--muted);">${todayProgress.length} hareket tamamlandı</span>
+                    </div>
+                    ${todayProgress.map((exercise, index) => `
+                        <div class="progress-exercise">
+                            <div class="progress-exercise-info">
+                                <div class="progress-exercise-name">${exercise.name}</div>
+                                <div class="progress-exercise-details">${exercise.sets} dk × ${exercise.reps}</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                                <div class="progress-exercise-time">
+                                    <i class="fas fa-clock"></i> ${exercise.completedAt}
+                                </div>
+                                <button class="btn-icon" onclick="removeFromProgress(${index})" title="Kaldır" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        async function removeFromProgress(index) {
+            const today = new Date().toISOString().split('T')[0];
+            if (progressData[today] && progressData[today][index]) {
+                const confirmed = await showConfirm('Bu hareketi ilerlemeden kaldırmak istediğinize emin misiniz?', 'Hareketi Kaldır', 'danger');
+                if (confirmed) {
+                    progressData[today].splice(index, 1);
+                    saveProgressData();
+                    renderProgress();
+                    renderHistory();
+                    renderWeeklyChart();
+                    showToast('Hareket ilerlemeden kaldırıldı.', 'success');
+                }
+            }
+        }
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
+        }
+        function getDayName(date) {
+            const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+            return days[date.getDay()];
+        }
+        function renderHistory() {
+            const container = document.getElementById('historyContainer');
+            const historyDays = [];
+            for (let i = 1; i < 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayName = getDayName(date);
+                const saved = localStorage.getItem(`nutritrack_progress_${SPORT_TYPE}_${dateStr}`);
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data[dateStr] && data[dateStr].length > 0) {
+                        historyDays.push({ date: dateStr, dayName: dayName, count: data[dateStr].length });
+                    }
+                }
+            }
+            if (historyDays.length === 0) {
+                container.innerHTML = `<div class="progress-empty"><i class="fas fa-calendar-alt"></i><p>Henüz geçmiş gün kaydı yok.</p></div>`;
+                return;
+            }
+            container.innerHTML = historyDays.map(day => `
+                <div class="history-day">
+                    <div class="history-day-info">
+                        <div class="history-day-date">${day.dayName} - ${formatDate(day.date)}</div>
+                        <div class="history-day-count">${day.count} hareket tamamlandı</div>
+                    </div>
+                    <i class="fas fa-check-circle" style="color: #22c55e; font-size: 1.2rem;"></i>
+                </div>
+            `).join('');
+        }
+        function renderWeeklyChart() {
+            const ctx = document.getElementById('weeklyChart');
+            if (!ctx) return;
+            const labels = [];
+            const data = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayName = getDayName(date);
+                labels.push(dayName);
+                const saved = localStorage.getItem(`nutritrack_progress_${SPORT_TYPE}_${dateStr}`);
+                if (saved) {
+                    const progressData = JSON.parse(saved);
+                    if (progressData[dateStr] && progressData[dateStr].length > 0) {
+                        data.push(progressData[dateStr].length);
+                    } else {
+                        data.push(0);
+                    }
+                } else {
+                    data.push(0);
+                }
+            }
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#e6edf7' : '#0f172a';
+            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            if (weeklyChart) weeklyChart.destroy();
+            weeklyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tamamlanan Hareket Sayısı',
+                        data: data,
+                        backgroundColor: isDark ? 'rgba(59, 130, 246, 0.6)' : 'rgba(59, 130, 246, 0.8)',
+                        borderColor: isDark ? 'rgba(59, 130, 246, 1)' : 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDark ? 'rgba(12, 18, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: textColor, stepSize: 1 },
+                            grid: { color: gridColor }
+                        },
+                        x: {
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
+                        }
+                    }
+                }
+            });
+        }
+        function renderTable() {
+            const tbody = document.getElementById('workoutTableBody');
+            tbody.innerHTML = '';
+            DAYS.forEach(day => {
+                const exercises = workoutData[day] || [];
+                const row = document.createElement('tr');
+                const dayCell = document.createElement('td');
+                dayCell.textContent = day;
+                row.appendChild(dayCell);
+                const exercisesCell = document.createElement('td');
+                if (exercises.length === 0) {
+                    exercisesCell.innerHTML = '<span class="empty-day">Henüz hareket eklenmedi</span>';
+                } else {
+                    exercises.forEach((exercise, index) => {
+                        const exerciseDiv = document.createElement('div');
+                        exerciseDiv.className = 'exercise-item';
+                        exerciseDiv.innerHTML = `
+                            <div class="exercise-info">
+                                <div class="exercise-name">${exercise.name}</div>
+                                <div class="exercise-details">${exercise.sets} dk × ${exercise.reps}</div>
+                            </div>
+                            <div class="exercise-actions">
+                                <button class="btn-icon btn-complete" onclick="addToProgress('${day}', ${index})" title="Tamamla"><i class="fas fa-check"></i></button>
+                                <button class="btn-icon" onclick="editExercise('${day}', ${index})" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon" onclick="deleteExercise('${day}', ${index})" title="Sil"><i class="fas fa-trash"></i></button>
+                            </div>
+                        `;
+                        exercisesCell.appendChild(exerciseDiv);
+                    });
+                }
+                row.appendChild(exercisesCell);
+                const summaryCell = document.createElement('td');
+                if (exercises.length > 0) {
+                    const totalTime = exercises.reduce((sum, ex) => sum + parseInt(ex.sets), 0);
+                    summaryCell.textContent = `${totalTime} dk`;
+                } else {
+                    summaryCell.innerHTML = '<span class="empty-day">-</span>';
+                }
+                row.appendChild(summaryCell);
+                const notesCell = document.createElement('td');
+                const notes = exercises.filter(ex => ex.note).map(ex => ex.note).join(', ');
+                if (notes) {
+                    notesCell.textContent = notes;
+                } else {
+                    notesCell.innerHTML = '<span class="empty-day">-</span>';
+                }
+                row.appendChild(notesCell);
+                const actionCell = document.createElement('td');
+                const addBtn = document.createElement('button');
+                addBtn.className = 'btn-add';
+                addBtn.innerHTML = '<i class="fas fa-plus"></i> Hareket Ekle';
+                addBtn.onclick = () => openModal(day);
+                actionCell.appendChild(addBtn);
+                row.appendChild(actionCell);
+                tbody.appendChild(row);
+            });
+        }
+        function openModal(day, index = null) {
+            const modal = document.getElementById('exerciseModal');
+            const form = document.getElementById('exerciseForm');
+            const modalTitle = document.getElementById('modalTitle');
+            document.getElementById('editDay').value = day;
+            document.getElementById('editIndex').value = index !== null ? index : '';
+            if (index !== null) {
+                modalTitle.textContent = 'Hareketi Düzenle';
+                const exercise = workoutData[day][index];
+                document.getElementById('exerciseName').value = exercise.name;
+                document.getElementById('exerciseSets').value = exercise.sets;
+                document.getElementById('exerciseReps').value = exercise.reps;
+                document.getElementById('exerciseNote').value = exercise.note || '';
+            } else {
+                modalTitle.textContent = `${day} - Hareket Ekle`;
+                form.reset();
+            }
+            modal.classList.add('active');
+        }
+        function closeModal() {
+            document.getElementById('exerciseModal').classList.remove('active');
+            document.getElementById('exerciseForm').reset();
+        }
+        function saveExercise(event) {
+            event.preventDefault();
+            const day = document.getElementById('editDay').value;
+            const index = document.getElementById('editIndex').value;
+            const exercise = {
+                name: document.getElementById('exerciseName').value,
+                sets: parseInt(document.getElementById('exerciseSets').value),
+                reps: document.getElementById('exerciseReps').value,
+                note: document.getElementById('exerciseNote').value
+            };
+            if (!workoutData[day]) {
+                workoutData[day] = [];
+            }
+            if (index !== '') {
+                workoutData[day][parseInt(index)] = exercise;
+            } else {
+                workoutData[day].push(exercise);
+            }
+            saveWorkoutData();
+            renderTable();
+            closeModal();
+        }
+        function editExercise(day, index) {
+            openModal(day, index);
+        }
+        async function deleteExercise(day, index) {
+            const confirmed = await showConfirm('Bu hareketi silmek istediğinize emin misiniz?', 'Hareketi Sil', 'danger');
+            if (confirmed) {
+                workoutData[day].splice(index, 1);
+                saveWorkoutData();
+                renderTable();
+                showToast('Hareket silindi.', 'success');
+            }
+        }
+        document.getElementById('exerciseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

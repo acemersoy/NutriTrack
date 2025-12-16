@@ -1,0 +1,12 @@
+{
+  "appId": "com.acemersoy.nutritrack",
+  "appName": "NutriTrack",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
+

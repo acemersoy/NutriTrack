@@ -67,11 +67,9 @@ html:not(.theme-transition) *::after {
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
-    transition: background 0.3s ease !important,
-                color 0.3s ease !important,
-                border-color 0.3s ease !important,
-                box-shadow 0.3s ease !important,
-                opacity 0.3s ease !important;
+    transition-property: background, color, border-color, box-shadow, opacity;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
 }
 
 /* Container smooth scroll */
@@ -612,9 +610,16 @@ html.theme-transition *::after {
     display: flex !important;
     gap: 20px !important;
     z-index: 9999 !important;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out !important;
     width: auto !important;
     min-width: fit-content !important;
+}
+
+/* Klavye açılınca navbar'ı gizle */
+body.keyboard-open .navigation {
+    transform: translateX(-50%) translateY(calc(100% + 20px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 [data-theme="dark"] .navigation {

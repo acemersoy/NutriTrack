@@ -109,6 +109,10 @@ class NutriTrack {
         if (document.getElementById('todayWater')) {
             document.getElementById('todayWater').textContent = this.todayData.water;
         }
+        // Quick action card'daki su sayısını da güncelle
+        if (document.getElementById('consumedWater')) {
+            document.getElementById('consumedWater').textContent = this.todayData.water;
+        }
         
         // BMR hesapla
         if (this.userData.weight && this.userData.height && this.userData.age && this.userData.gender) {

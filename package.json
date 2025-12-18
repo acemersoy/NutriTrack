@@ -9,7 +9,13 @@
     "deploy:netlify": "netlify deploy --prod",
     "deploy:firebase": "firebase deploy",
     "test": "echo \"No tests yet\" && exit 0",
-    "lint": "echo \"No linter configured\" && exit 0"
+    "lint": "echo \"No linter configured\" && exit 0",
+    "cap:sync": "npx cap sync android",
+    "cap:copy": "npx cap copy android",
+    "cap:open": "npx cap open android",
+    "android:sync": "npx cap sync android && echo \"✅ Android sync tamamlandı! Android Studio'da Run butonuna basabilirsin.\"",
+    "android:open": "npx cap open android",
+    "icon:generate": "npx @capacitor/assets generate --iconPath ./icon.png --splashPath ./splash.png"
   },
   "keywords": [
     "nutrition",
